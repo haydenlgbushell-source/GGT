@@ -403,61 +403,76 @@
     color:#d4a843; text-shadow:0 1px 2px rgba(0,0,0,0.4);
   }
 
-  /* MEMBERS */
-  .members-grid{ display:grid; grid-template-columns:1fr; gap:30px; }
-  .member-list{ list-style:none; }
-  .member-list li{
-    border-bottom:1px solid var(--line);
+  /* MEMBERS — TILE GRID */
+  .members-grid{ display:grid; grid-template-columns:1fr; gap:40px; }
+  .member-tiles{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px;
+  }
+  .member-tile{
+    display:flex; align-items:center; gap:18px;
+    padding:18px 20px;
+    background:var(--felt);
+    border:1px solid var(--line);
+    border-radius:4px;
     cursor:pointer;
+    transition:border-color 0.3s ease, background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   }
-  .member-row{
-    display:flex; align-items:center; gap:14px;
-    padding:14px 0 8px;
-    font-family:'Fraunces',serif; font-size:1.05rem;
+  .member-tile:hover{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.04);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(0,0,0,0.3), 0 0 16px rgba(201,162,39,0.06);
   }
-  .member-row .dot{ width:6px; height:6px; border-radius:50%; background:var(--brass); flex-shrink:0; }
-  .member-row .member-name{ flex:1; }
-  .member-row .trip-count{
-    font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--brass-bright);
-    letter-spacing:0.05em;
+  .tile-photo{
+    width:72px; height:88px; flex-shrink:0;
+    border:2px solid var(--line);
+    border-radius:3px;
+    background:var(--felt-dark);
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color 0.3s ease;
   }
-  .member-row .member-chevron{
-    font-size:0.7rem; color:var(--brass-bright); transition:transform .3s; opacity:0.6;
+  .member-tile:hover .tile-photo{ border-color:var(--brass); }
+  .tile-photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(0.9) contrast(1.05);
   }
-  .member-list li.open .member-chevron{ transform:rotate(180deg); }
-  .edition-pills{
-    display:flex; flex-wrap:wrap; gap:5px; padding:0 0 6px 20px;
+  .tile-photo .tile-initials{
+    font-family:'Fraunces',serif; font-size:1.6rem;
+    color:var(--brass); opacity:0.3;
+    user-select:none;
   }
-  .edition-pills .pill{
-    font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.05em;
-    color:var(--brass-bright); border:1px solid var(--line); padding:2px 7px;
-    border-radius:2px; background:rgba(201,162,39,0.06);
+  .tile-info{ flex:1; min-width:0; }
+  .tile-rank{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px;
+    background:var(--brass);
+    color:var(--felt-dark);
+    font-family:'Fraunces',serif; font-weight:700; font-size:0.85rem;
+    border-radius:3px; margin-bottom:6px;
   }
-  .member-detail{
-    max-height:0; overflow:hidden; transition:max-height .35s ease, opacity .25s ease;
-    opacity:0; padding-left:20px;
+  .tile-name{
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:1.15rem; color:var(--cream); line-height:1.2;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .member-list li.open .member-detail{ max-height:600px; opacity:1; }
-  .member-detail-inner{
-    padding:8px 0 16px;
-    border-top:1px dashed var(--line);
+  .tile-nickname{
+    font-family:'Fraunces',serif; font-style:italic;
+    font-size:0.82rem; color:var(--brass-bright); margin-top:2px;
   }
-  .member-detail-inner .trip-item{
-    display:flex; gap:12px; align-items:baseline;
-    padding:6px 0; font-size:0.85rem;
-  }
-  .member-detail-inner .trip-num{
-    font-family:'JetBrains Mono',monospace; font-size:0.72rem;
-    color:var(--brass-bright); min-width:36px; font-weight:700;
-  }
-  .member-detail-inner .trip-loc{
-    font-family:'Fraunces',serif; color:var(--cream-dim);
-  }
-  .member-detail-inner .trip-date{
+  .tile-trips{
     font-family:'JetBrains Mono',monospace; font-size:0.68rem;
-    color:var(--cream-dim); opacity:0.6; margin-left:auto;
+    color:var(--cream-dim); opacity:0.5; margin-top:6px;
+    letter-spacing:0.03em;
   }
-  .prov-tag{ font-family:'Public Sans'; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--maroon-bright); border:1px solid var(--maroon-bright); padding:2px 8px; border-radius:20px; margin-left:auto;}
+  .prov-tag-tile{
+    display:inline-block;
+    font-family:'Public Sans',sans-serif; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--maroon-bright); border:1px solid var(--maroon-bright);
+    padding:2px 7px; border-radius:20px; margin-top:4px;
+  }
 
   /* MEMBER PROFILE CARD MODAL */
   .profile-overlay{
@@ -717,10 +732,14 @@
     .upload-hint{ font-size:0.75rem; }
 
     /* Members */
-    .member-row{ font-size:0.95rem; padding:12px 0 6px; }
-    .edition-pills{ padding-left:16px; }
-    .member-detail{ padding-left:16px; }
-    .prov-tag{ margin-left:0; margin-top:2px; flex-basis:100%; width:fit-content; }
+    .member-tiles{ grid-template-columns:1fr; gap:10px; }
+    .member-tile{ padding:14px 16px; gap:14px; }
+    .tile-photo{ width:60px; height:74px; }
+    .tile-photo .tile-initials{ font-size:1.3rem; }
+    .tile-rank{ width:24px; height:24px; font-size:0.75rem; }
+    .tile-name{ font-size:1rem; }
+    .tile-nickname{ font-size:0.76rem; }
+    .tile-trips{ font-size:0.62rem; }
 
     /* Honour Board */
     .board-grid{ grid-template-columns:repeat(2,1fr); padding:10px; }
@@ -854,9 +873,9 @@
     <div class="members-grid">
       <div>
         <h3 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright); margin-bottom:14px;">Full-Time Members</h3>
-        <ul class="member-list" id="fullMembers"></ul>
+        <div class="member-tiles" id="fullMembers"></div>
         <h3 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright); margin:30px 0 14px;">Provisional Members</h3>
-        <ul class="member-list" id="provMembers"></ul>
+        <div class="member-tiles" id="provMembers"></div>
       </div>
     </div>
   </section>
@@ -1291,42 +1310,33 @@ profileOverlay.addEventListener('click', (ev)=>{
   if(ev.target === profileOverlay) profileOverlay.classList.remove('active');
 });
 
-function renderMember(ul, name, trips, dotColor, extraHtml){
-  const li = document.createElement('li');
-  const tripDetails = trips.map(num=>{
-    const ed = editionMap[num];
-    return ed ? `<div class="trip-item"><span class="trip-num">${num}</span><span class="trip-loc">${ed.loc}</span><span class="trip-date">${ed.date}</span></div>` : '';
-  }).join('');
-  li.innerHTML = `
-    <div class="member-row">
-      <span class="dot"${dotColor ? ` style="background:${dotColor};"` : ''}></span>
-      <span class="member-name">${name}${extraHtml||''}</span>
-      <span class="trip-count">${trips.length}/${editions.length}</span>
-      <span class="member-chevron">&#9660;</span>
+function renderTile(container, name, trips, rank, provTag){
+  const p = memberProfiles[name];
+  const initials = name.split(' ').map(w=>w[0]).join('');
+  const nickname = p ? p.nickname : '';
+  const photo = p ? p.photo : '';
+  const tile = document.createElement('div');
+  tile.className = 'member-tile';
+  tile.innerHTML = `
+    <div class="tile-photo">
+      ${photo ? `<img src="${photo}" alt="${name}">` : `<span class="tile-initials">${initials}</span>`}
     </div>
-    <div class="edition-pills">${trips.map(n=>`<span class="pill">${n}</span>`).join('')}</div>
-    <div class="member-detail">
-      <div class="member-detail-inner">
-        ${tripDetails}
-      </div>
+    <div class="tile-info">
+      <div class="tile-rank">${rank}</div>
+      <div class="tile-name">${name}</div>
+      ${nickname ? `<div class="tile-nickname">"${nickname}"</div>` : ''}
+      <div class="tile-trips">${trips.length} / ${editions.length} Tours</div>
+      ${provTag ? `<span class="prov-tag-tile">${provTag}</span>` : ''}
     </div>`;
-  const nameEl = li.querySelector('.member-name');
-  nameEl.style.cursor = 'pointer';
-  nameEl.addEventListener('click', (ev)=>{
-    ev.stopPropagation();
-    showProfile(name, trips);
-  });
-  li.addEventListener('click', (ev)=>{
-    if(!ev.target.closest('.member-name')) li.classList.toggle('open');
-  });
-  ul.appendChild(li);
+  tile.addEventListener('click', ()=> showProfile(name, trips));
+  container.appendChild(tile);
 }
 
-const fullUl = document.getElementById('fullMembers');
-fullMembers.forEach(m=> renderMember(fullUl, m, attendance[m]));
+const fullGrid = document.getElementById('fullMembers');
+fullMembers.forEach((m,i)=> renderTile(fullGrid, m, attendance[m], i+1));
 
-const provUl = document.getElementById('provMembers');
-provMembers.forEach(m=> renderMember(provUl, m.name, m.trips, 'var(--maroon-bright)', `<span class="prov-tag">${m.tag}</span>`));
+const provGrid = document.getElementById('provMembers');
+provMembers.forEach((m,i)=> renderTile(provGrid, m.name, m.trips, fullMembers.length + i + 1, m.tag));
 
 // ---------- GALLERY (localStorage) ----------
 const galleryWrap = document.getElementById('galleryWrap');

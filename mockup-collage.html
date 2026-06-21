@@ -79,7 +79,7 @@
   }
   .photo-collage{
     position:relative;
-    height:420px;
+    height:680px;
     margin:10px 0;
   }
   .photo-collage .photo{
@@ -118,33 +118,63 @@
   /* Individual photo positions — scattered like dropped on a table */
   .photo-collage .p1{
     width:260px; height:200px;
-    top:10px; left:2%;
+    top:0; left:0;
     transform:rotate(-4deg);
     z-index:3;
   }
   .photo-collage .p2{
-    width:220px; height:170px;
-    top:30px; left:28%;
+    width:200px; height:155px;
+    top:15px; left:26%;
     transform:rotate(2.5deg);
     z-index:2;
   }
   .photo-collage .p3{
-    width:200px; height:260px;
-    top:0px; right:8%;
+    width:175px; height:230px;
+    top:0; right:6%;
     transform:rotate(-2deg);
     z-index:4;
   }
   .photo-collage .p4{
-    width:230px; height:175px;
-    bottom:10px; left:6%;
+    width:210px; height:160px;
+    top:190px; left:3%;
     transform:rotate(3deg);
     z-index:2;
   }
   .photo-collage .p5{
-    width:240px; height:180px;
-    bottom:0px; left:34%;
+    width:195px; height:150px;
+    top:185px; left:28%;
     transform:rotate(-3.5deg);
     z-index:5;
+  }
+  .photo-collage .p6{
+    width:180px; height:235px;
+    top:170px; right:10%;
+    transform:rotate(2deg);
+    z-index:3;
+  }
+  .photo-collage .p7{
+    width:235px; height:170px;
+    top:370px; left:0;
+    transform:rotate(-2.5deg);
+    z-index:4;
+  }
+  .photo-collage .p8{
+    width:175px; height:135px;
+    top:390px; left:27%;
+    transform:rotate(4deg);
+    z-index:2;
+  }
+  .photo-collage .p9{
+    width:190px; height:245px;
+    top:400px; right:18%;
+    transform:rotate(-3deg);
+    z-index:5;
+  }
+  .photo-collage .p10{
+    width:280px; height:195px;
+    bottom:0; left:8%;
+    transform:rotate(1.5deg);
+    z-index:6;
   }
 
   /* Lightbox */
@@ -171,12 +201,15 @@
   @media(max-width:680px){
     .entry{padding-left:56px;}
     .entry .numeral{width:46px;height:46px;font-size:0.85rem;}
-    .photo-collage{ height:520px; }
-    .photo-collage .p1{ width:55%; height:150px; top:0; left:0; }
-    .photo-collage .p2{ width:50%; height:140px; top:10px; left:auto; right:0; }
-    .photo-collage .p3{ width:45%; height:180px; top:150px; right:2%; left:auto; }
-    .photo-collage .p4{ width:52%; height:145px; top:160px; left:0; }
-    .photo-collage .p5{ width:60%; height:155px; bottom:0; left:18%; }
+    .photo-collage{ height:auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+    .photo-collage .photo{
+      position:relative !important; top:auto !important; left:auto !important;
+      right:auto !important; bottom:auto !important;
+      width:calc(50% - 6px) !important; height:140px !important;
+    }
+    .photo-collage .photo:nth-child(odd){ transform:rotate(-2deg) !important; }
+    .photo-collage .photo:nth-child(even){ transform:rotate(2deg) !important; }
+    .photo-collage .photo:last-child{ width:65% !important; }
   }
 </style>
 </head>
@@ -221,6 +254,21 @@
             </div>
             <div class="photo p5 pinned">
               <img src="photos/ggt15/course.jpg" alt="At the first tee">
+            </div>
+            <div class="photo p6">
+              <img src="photos/ggt15/photo6.jpg" alt="Arriving at the course">
+            </div>
+            <div class="photo p7 pinned">
+              <img src="photos/ggt15/photo7.jpg" alt="Beers at the pub">
+            </div>
+            <div class="photo p8">
+              <img src="photos/ggt15/photo8.jpg" alt="Hard earned thirst on the cart">
+            </div>
+            <div class="photo p9">
+              <img src="photos/ggt15/photo9.jpg" alt="On the green">
+            </div>
+            <div class="photo p10 pinned">
+              <img src="photos/ggt15/photo10.jpg" alt="Full group photo">
             </div>
           </div>
         </div>

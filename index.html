@@ -19,6 +19,13 @@
     --maroon-bright:#8a3645;
     --ink:#0c2018;
     --line: rgba(201,162,39,0.35);
+    --blazer-stripe: repeating-linear-gradient(
+      90deg,
+      #1a3f2a 0px, #1a3f2a 38px,
+      #f1e9d2 38px, #f1e9d2 41px,
+      #c9a227 41px, #c9a227 53px,
+      #f1e9d2 53px, #f1e9d2 56px
+    );
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -131,7 +138,12 @@
   .scroll-cue::after{ content:""; width:1px; height:30px; background:linear-gradient(var(--brass), transparent); }
 
   /* SECTION HEADERS */
-  .section{ padding:110px 0 40px; position:relative;}
+  .section{ padding:110px 0 40px; position:relative; overflow:hidden; }
+  .section::after{
+    content:""; position:absolute; top:0; bottom:0; right:-20px;
+    width:120px; background:var(--blazer-stripe);
+    opacity:0.06; transform:skewX(-8deg); pointer-events:none;
+  }
   .eyebrow{
     font-size:0.72rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--brass-bright);
     margin-bottom:10px; display:block;

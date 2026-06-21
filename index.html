@@ -240,15 +240,59 @@
   .bar{ height:3px; background:var(--brass); opacity:0.5; margin-top:6px; }
 
   /* MEMBERS */
-  .members-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:50px; }
-  @media(max-width:760px){ .members-grid{ grid-template-columns:1fr;} }
+  .members-grid{ display:grid; grid-template-columns:1fr; gap:30px; }
   .member-list{ list-style:none; }
   .member-list li{
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .member-row{
     display:flex; align-items:center; gap:14px;
-    padding:14px 0; border-bottom:1px solid var(--line);
+    padding:14px 0 8px;
     font-family:'Fraunces',serif; font-size:1.05rem;
   }
-  .member-list li .dot{ width:6px; height:6px; border-radius:50%; background:var(--brass);}
+  .member-row .dot{ width:6px; height:6px; border-radius:50%; background:var(--brass); flex-shrink:0; }
+  .member-row .member-name{ flex:1; }
+  .member-row .trip-count{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--brass-bright);
+    letter-spacing:0.05em;
+  }
+  .member-row .member-chevron{
+    font-size:0.7rem; color:var(--brass-bright); transition:transform .3s; opacity:0.6;
+  }
+  .member-list li.open .member-chevron{ transform:rotate(180deg); }
+  .edition-pills{
+    display:flex; flex-wrap:wrap; gap:5px; padding:0 0 6px 20px;
+  }
+  .edition-pills .pill{
+    font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.05em;
+    color:var(--brass-bright); border:1px solid var(--line); padding:2px 7px;
+    border-radius:2px; background:rgba(201,162,39,0.06);
+  }
+  .member-detail{
+    max-height:0; overflow:hidden; transition:max-height .35s ease, opacity .25s ease;
+    opacity:0; padding-left:20px;
+  }
+  .member-list li.open .member-detail{ max-height:600px; opacity:1; }
+  .member-detail-inner{
+    padding:8px 0 16px;
+    border-top:1px dashed var(--line);
+  }
+  .member-detail-inner .trip-item{
+    display:flex; gap:12px; align-items:baseline;
+    padding:6px 0; font-size:0.85rem;
+  }
+  .member-detail-inner .trip-num{
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem;
+    color:var(--brass-bright); min-width:36px; font-weight:700;
+  }
+  .member-detail-inner .trip-loc{
+    font-family:'Fraunces',serif; color:var(--cream-dim);
+  }
+  .member-detail-inner .trip-date{
+    font-family:'JetBrains Mono',monospace; font-size:0.68rem;
+    color:var(--cream-dim); opacity:0.6; margin-left:auto;
+  }
   .prov-tag{ font-family:'Public Sans'; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--maroon-bright); border:1px solid var(--maroon-bright); padding:2px 8px; border-radius:20px; margin-left:auto;}
 
   /* GALLERY */
@@ -325,7 +369,9 @@
     .upload-hint{ font-size:0.75rem; }
 
     /* Members */
-    .member-list li{ flex-wrap:wrap; font-size:0.95rem; gap:10px; padding:12px 0; }
+    .member-row{ font-size:0.95rem; padding:12px 0 6px; }
+    .edition-pills{ padding-left:16px; }
+    .member-detail{ padding-left:16px; }
     .prov-tag{ margin-left:0; margin-top:2px; flex-basis:100%; width:fit-content; }
 
     /* Leaderboard */
@@ -408,9 +454,7 @@
       <div>
         <h3 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright); margin-bottom:14px;">Full-Time Members</h3>
         <ul class="member-list" id="fullMembers"></ul>
-      </div>
-      <div>
-        <h3 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright); margin-bottom:14px;">Provisional Members</h3>
+        <h3 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright); margin:30px 0 14px;">Provisional Members</h3>
         <ul class="member-list" id="provMembers"></ul>
       </div>
     </div>
@@ -602,10 +646,26 @@ Sunday and the weary gents got their breakfast and headed off to the airport sur
     winners:["TBC"], losers:["TBC"] },
 ];
 
-const fullMembers = ["Aaron Hickey","Nick Forsyth","Oli Finley","Mitch Corrigan","Matt Perkes","Nick Bateman","James Reeves","Will Dennis","George Davey","Nat Connor","James Wakefield","Mark Williams","Occy Austin","Hayden Bushell"];
+const attendance = {
+  "Aaron Hickey":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Nick Forsyth":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Oli Finley":       ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Mitch Corrigan":   ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Matt Perkes":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Nick Bateman":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "James Reeves":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Will Dennis":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "George Davey":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Nat Connor":       ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "James Wakefield":  ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Mark Williams":    ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Occy Austin":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+  "Hayden Bushell":   ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV"],
+};
+const fullMembers = Object.keys(attendance);
 const provMembers = [
-  { name:"Chris Yarrington", tag:"President of the Provisionals" },
-  { name:"Dave Smith", tag:"Junior VP of Provisionals" },
+  { name:"Chris Yarrington", tag:"President of the Provisionals", trips:["VI","X","XII","XIII","XIV"] },
+  { name:"Dave Smith", tag:"Junior VP of Provisionals", trips:["XII","XIII","XIV"] },
 ];
 
 // ---------- RENDER LEDGER ----------
@@ -664,18 +724,37 @@ ranked.forEach(([name,wins],i)=>{
 });
 
 // ---------- MEMBERS ----------
+const editionMap = {};
+editions.forEach(e=>{ editionMap[e.num] = e; });
+
+function renderMember(ul, name, trips, dotColor, extraHtml){
+  const li = document.createElement('li');
+  const tripDetails = trips.map(num=>{
+    const ed = editionMap[num];
+    return ed ? `<div class="trip-item"><span class="trip-num">${num}</span><span class="trip-loc">${ed.loc}</span><span class="trip-date">${ed.date}</span></div>` : '';
+  }).join('');
+  li.innerHTML = `
+    <div class="member-row">
+      <span class="dot"${dotColor ? ` style="background:${dotColor};"` : ''}></span>
+      <span class="member-name">${name}${extraHtml||''}</span>
+      <span class="trip-count">${trips.length}/${editions.length}</span>
+      <span class="member-chevron">&#9660;</span>
+    </div>
+    <div class="edition-pills">${trips.map(n=>`<span class="pill">${n}</span>`).join('')}</div>
+    <div class="member-detail">
+      <div class="member-detail-inner">
+        ${tripDetails}
+      </div>
+    </div>`;
+  li.addEventListener('click', ()=>{ li.classList.toggle('open'); });
+  ul.appendChild(li);
+}
+
 const fullUl = document.getElementById('fullMembers');
-fullMembers.forEach(m=>{
-  const li = document.createElement('li');
-  li.innerHTML = `<span class="dot"></span>${m}`;
-  fullUl.appendChild(li);
-});
+fullMembers.forEach(m=> renderMember(fullUl, m, attendance[m]));
+
 const provUl = document.getElementById('provMembers');
-provMembers.forEach(m=>{
-  const li = document.createElement('li');
-  li.innerHTML = `<span class="dot" style="background:var(--maroon-bright);"></span>${m.name}<span class="prov-tag">${m.tag}</span>`;
-  provUl.appendChild(li);
-});
+provMembers.forEach(m=> renderMember(provUl, m.name, m.trips, 'var(--maroon-bright)', `<span class="prov-tag">${m.tag}</span>`));
 
 // ---------- GALLERY (localStorage) ----------
 const galleryWrap = document.getElementById('galleryWrap');

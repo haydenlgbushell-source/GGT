@@ -1008,8 +1008,8 @@ editions.forEach(e=>{
   const cell = document.createElement('div');
   cell.className = 'board-cell';
   const names = e.winners[0] === 'TBC'
-    ? '<span class="cell-winner" style="opacity:0.4;">TBC</span>'
-    : e.winners.map(w => `<span class="cell-winner">${w}</span>`).join('<span class="cell-amp">&amp;</span>');
+    ? '<div class="cell-winner" style="opacity:0.4;">TBC</div>'
+    : e.winners.map(w => `<div class="cell-winner">${w}</div>`).join('');
   cell.innerHTML = `
     <div class="cell-num">${e.num}</div>
     <div class="cell-loc">${e.loc}</div>

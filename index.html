@@ -231,10 +231,140 @@
     color: #fff6e2;
   }
 
+  .pw-overlay {
+    position: fixed; inset: 0; z-index: 900;
+    background: rgba(6,20,12,0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .pw-overlay.active { opacity: 1; visibility: visible; }
+
+  .pw-box {
+    width: min(90vw, 380px);
+    background: radial-gradient(120% 100% at 50% 30%, #1a3d28, #0d2718);
+    border: 1px solid rgba(199,169,106,0.35);
+    border-radius: 4px;
+    padding: 40px 32px 32px;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(199,169,106,0.08);
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .pw-overlay.active .pw-box {
+    transform: translateY(0) scale(1);
+  }
+
+  .pw-icon {
+    font-size: 28px; margin-bottom: 16px;
+    color: #c7a96a;
+  }
+
+  .pw-title {
+    font-family: 'Cormorant SC', serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.2em; text-indent: 0.2em;
+    color: #e7d6a8;
+    margin-bottom: 6px;
+  }
+
+  .pw-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: rgba(199,169,106,0.6);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .pw-field {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .pw-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(199,169,106,0.3);
+    border-radius: 2px;
+    color: #e7d6a8;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .pw-input::placeholder {
+    color: rgba(199,169,106,0.3);
+    font-style: italic;
+  }
+  .pw-input:focus {
+    border-color: #c7a96a;
+    box-shadow: 0 0 12px rgba(199,169,106,0.15);
+  }
+  .pw-input.error {
+    border-color: #c0392b;
+    animation: pwShake 0.4s ease;
+  }
+
+  @keyframes pwShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  .pw-error-msg {
+    color: #e74c3c;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    margin-top: -12px;
+    margin-bottom: 14px;
+    height: 18px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .pw-error-msg.show { opacity: 1; }
+
+  .pw-submit {
+    width: 100%;
+    padding: 13px 24px;
+    border: 1px solid rgba(199,169,106,0.55);
+    border-radius: 2px;
+    background: rgba(199,169,106,0.1);
+    color: #e7d6a8;
+    font-family: 'Cormorant SC', serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.22em; text-indent: 0.22em;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  .pw-submit:hover {
+    background: rgba(199,169,106,0.2);
+    border-color: #c7a96a;
+    color: #fff6e2;
+  }
+
+  .pw-close {
+    position: absolute; top: 12px; right: 14px;
+    width: 30px; height: 30px;
+    background: none; border: none;
+    color: rgba(199,169,106,0.4);
+    font-size: 20px; cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .pw-close:hover { color: #e7d6a8; }
+
   @media (max-width: 500px) {
     .crest-wrap { width: min(50vh, 220px); }
     .wordmark { letter-spacing: 0.25em; text-indent: 0.25em; }
     .enter-btn { padding: 12px 24px; letter-spacing: 0.18em; text-indent: 0.18em; }
+    .pw-box { padding: 32px 24px 24px; }
   }
 </style>
 </head>
@@ -279,18 +409,76 @@
   <button class="replay-btn" id="replayBtn" title="Replay intro">&#8634;</button>
 </div>
 
+<div class="pw-overlay" id="pwOverlay">
+  <div class="pw-box">
+    <button class="pw-close" id="pwClose">&times;</button>
+    <div class="pw-icon">&#9971;</div>
+    <div class="pw-title">MEMBERS ONLY</div>
+    <div class="pw-sub">Enter the password to continue</div>
+    <div class="pw-field">
+      <input type="password" class="pw-input" id="pwInput" placeholder="Password" autocomplete="off">
+    </div>
+    <div class="pw-error-msg" id="pwError">Wrong password, mate. Try again.</div>
+    <button class="pw-submit" id="pwSubmit">ENTER</button>
+  </div>
+</div>
+
 <script>
-document.getElementById('replayBtn').addEventListener('click', function() {
-  const cp = document.getElementById('centerpiece');
-  const scene = document.getElementById('scene');
-  const clone = cp.cloneNode(true);
-  cp.remove();
-  scene.insertBefore(clone, document.getElementById('replayBtn'));
-  clone.querySelector('.enter-btn').addEventListener('click', function(e) {
-    // allow default navigation
+(function(){
+  var k = [66,117,99,107,87,105,108,108,70,117,99,107];
+  function check(v){ return v === String.fromCharCode.apply(null,k); }
+
+  function openGate(e){
+    e.preventDefault();
+    var ov = document.getElementById('pwOverlay');
+    var inp = document.getElementById('pwInput');
+    ov.classList.add('active');
+    setTimeout(function(){ inp.focus(); }, 350);
+  }
+
+  function attempt(){
+    var inp = document.getElementById('pwInput');
+    var err = document.getElementById('pwError');
+    if(check(inp.value)){
+      window.location.href = 'site.html';
+    } else {
+      inp.classList.add('error');
+      err.classList.add('show');
+      setTimeout(function(){ inp.classList.remove('error'); }, 400);
+      setTimeout(function(){ err.classList.remove('show'); }, 2500);
+    }
+  }
+
+  function closeGate(){
+    var ov = document.getElementById('pwOverlay');
+    var inp = document.getElementById('pwInput');
+    var err = document.getElementById('pwError');
+    ov.classList.remove('active');
+    inp.value = '';
+    inp.classList.remove('error');
+    err.classList.remove('show');
+  }
+
+  document.querySelector('.enter-btn').addEventListener('click', openGate);
+  document.getElementById('pwSubmit').addEventListener('click', attempt);
+  document.getElementById('pwInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') attempt();
   });
-  document.getElementById('replayBtn').addEventListener('click', arguments.callee);
-});
+  document.getElementById('pwClose').addEventListener('click', closeGate);
+  document.getElementById('pwOverlay').addEventListener('click', function(e){
+    if(e.target === this) closeGate();
+  });
+
+  document.getElementById('replayBtn').addEventListener('click', function() {
+    var cp = document.getElementById('centerpiece');
+    var scene = document.getElementById('scene');
+    var clone = cp.cloneNode(true);
+    cp.remove();
+    scene.insertBefore(clone, document.getElementById('replayBtn'));
+    clone.querySelector('.enter-btn').addEventListener('click', openGate);
+    document.getElementById('replayBtn').addEventListener('click', arguments.callee);
+  });
+})();
 </script>
 </body>
 </html>

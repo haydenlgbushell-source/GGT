@@ -67,7 +67,7 @@
   .entry.open .full-story{max-height:3000px;opacity:1;}
   .entry .full-story-inner{padding-top:16px;margin-top:16px;border-top:1px dashed var(--line);color:var(--cream-dim);font-size:0.93rem;line-height:1.7;}
 
-  /* PHOTO COLLAGE */
+  /* PHOTO COLLAGE — scattered overlapping style */
   .edition-photos{
     margin-top:20px;
     padding-top:20px;
@@ -78,41 +78,73 @@
     color:var(--brass-bright);margin-bottom:12px;display:block;
   }
   .photo-collage{
-    display:grid;
-    grid-template-columns:repeat(6, 1fr);
-    grid-auto-rows:140px;
-    gap:6px;
+    position:relative;
+    height:420px;
+    margin:10px 0;
   }
   .photo-collage .photo{
-    position:relative;overflow:hidden;
-    border:1px solid var(--line);
-    border-radius:2px;
+    position:absolute;
+    overflow:hidden;
+    border:4px solid rgba(241,233,210,0.85);
+    background:var(--cream);
+    box-shadow:0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.25);
     cursor:pointer;
-    transition:border-color .3s;
+    transition:transform .35s ease, box-shadow .35s ease, z-index 0s;
+    z-index:1;
   }
-  .photo-collage .photo:hover{border-color:var(--brass);}
+  .photo-collage .photo:hover{
+    transform:scale(1.08) !important;
+    box-shadow:0 12px 40px rgba(0,0,0,0.55), 0 0 20px rgba(201,162,39,0.15);
+    z-index:10;
+  }
   .photo-collage .photo img{
     width:100%;height:100%;object-fit:cover;display:block;
-    filter:saturate(0.9) contrast(1.04);
-    transition:transform .4s ease, filter .4s ease;
+    filter:saturate(0.92) contrast(1.04);
   }
   .photo-collage .photo:hover img{
-    transform:scale(1.05);
-    filter:saturate(1) contrast(1.06);
+    filter:saturate(1) contrast(1.08);
   }
-  .photo-collage .photo.hero-photo{
-    grid-column:span 3;
-    grid-row:span 2;
+  /* Tape / pin accent on some photos */
+  .photo-collage .photo::after{
+    content:"";position:absolute;
+    width:30px;height:10px;
+    background:rgba(201,162,39,0.5);
+    top:-1px;left:50%;transform:translateX(-50%);
+    border-radius:0 0 2px 2px;
+    opacity:0;
   }
-  .photo-collage .photo.wide{
-    grid-column:span 3;
+  .photo-collage .photo.pinned::after{opacity:1;}
+
+  /* Individual photo positions — scattered like dropped on a table */
+  .photo-collage .p1{
+    width:260px; height:200px;
+    top:10px; left:2%;
+    transform:rotate(-4deg);
+    z-index:3;
   }
-  .photo-collage .photo.tall{
-    grid-row:span 2;
-    grid-column:span 2;
+  .photo-collage .p2{
+    width:220px; height:170px;
+    top:30px; left:28%;
+    transform:rotate(2.5deg);
+    z-index:2;
   }
-  .photo-collage .photo.reg{
-    grid-column:span 2;
+  .photo-collage .p3{
+    width:200px; height:260px;
+    top:0px; right:8%;
+    transform:rotate(-2deg);
+    z-index:4;
+  }
+  .photo-collage .p4{
+    width:230px; height:175px;
+    bottom:10px; left:6%;
+    transform:rotate(3deg);
+    z-index:2;
+  }
+  .photo-collage .p5{
+    width:240px; height:180px;
+    bottom:0px; left:34%;
+    transform:rotate(-3.5deg);
+    z-index:5;
   }
 
   /* Lightbox */
@@ -139,14 +171,12 @@
   @media(max-width:680px){
     .entry{padding-left:56px;}
     .entry .numeral{width:46px;height:46px;font-size:0.85rem;}
-    .photo-collage{
-      grid-template-columns:1fr 1fr;
-      grid-auto-rows:120px;
-    }
-    .photo-collage .photo.hero-photo{grid-column:span 2;grid-row:span 2;}
-    .photo-collage .photo.wide{grid-column:span 2;}
-    .photo-collage .photo.tall{grid-column:span 1;grid-row:span 2;}
-    .photo-collage .photo.reg{grid-column:span 1;}
+    .photo-collage{ height:520px; }
+    .photo-collage .p1{ width:55%; height:150px; top:0; left:0; }
+    .photo-collage .p2{ width:50%; height:140px; top:10px; left:auto; right:0; }
+    .photo-collage .p3{ width:45%; height:180px; top:150px; right:2%; left:auto; }
+    .photo-collage .p4{ width:52%; height:145px; top:160px; left:0; }
+    .photo-collage .p5{ width:60%; height:155px; bottom:0; left:18%; }
   }
 </style>
 </head>
@@ -177,19 +207,19 @@
         <div class="edition-photos">
           <span class="photos-label">Tour Photos</span>
           <div class="photo-collage">
-            <div class="photo hero-photo">
+            <div class="photo p1 pinned">
               <img src="photos/ggt15/group.jpg" alt="The group on the course">
             </div>
-            <div class="photo wide">
-              <img src="photos/ggt15/foursome.jpg" alt="Foursome at Pacific Dunes">
-            </div>
-            <div class="photo tall">
-              <img src="photos/ggt15/blazers.jpg" alt="Winners in the blazers">
-            </div>
-            <div class="photo reg">
+            <div class="photo p2">
               <img src="photos/ggt15/green-selfie.jpg" alt="On the green">
             </div>
-            <div class="photo reg">
+            <div class="photo p3 pinned">
+              <img src="photos/ggt15/blazers.jpg" alt="Winners in the blazers">
+            </div>
+            <div class="photo p4">
+              <img src="photos/ggt15/foursome.jpg" alt="Foursome at Pacific Dunes">
+            </div>
+            <div class="photo p5 pinned">
               <img src="photos/ggt15/course.jpg" alt="At the first tee">
             </div>
           </div>

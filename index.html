@@ -334,7 +334,7 @@
 <main class="wrap">
 
   <section class="section" id="upcoming">
-    <span class="eyebrow">Edition XI</span>
+    <span class="eyebrow">Next Edition</span>
     <h2>The Next Tour</h2>
     <p class="lede">Details land here the moment they're locked in. Whoever's running it owes the group a course, a date, and a name for the WhatsApp group chat.</p>
     <div class="plaque">
@@ -395,7 +395,7 @@
 
   <footer>
     <p class="tagline">"What goes on tour stays on tour — which includes this document."</p>
-    <p class="fine mono">GGT &middot; Est. 2012 &middot; X Editions Strong</p>
+    <p class="fine mono">GGT &middot; Est. 2012 &middot; XIV Editions Strong</p>
   </footer>
 </main>
 
@@ -523,6 +523,24 @@ Drew finally made his way to the course on what was another cracking day. Given 
 We all put some money together to punt on the Everest but unfortunately none of us selected YES YES YES and we went NO NO NO. We headed back to the hotel for a quick change before going into Newie to watch the Wallabies get flogged by England. This certainly took the wind out of our sails but went out looking for some fluff...`,
     realWinner:"Perksey & Nat",
     winners:["Matt Perkes","Nat Connor"], losers:["I can confirm Reeves did not come last (miracles can happen)"] },
+
+  { num:"X", year:"2022", loc:"Bonville Golf Resort", date:"September 2022", quote:"The return",
+    blurb:"After a COVID-enforced hiatus, the GGT flew north to Bonville Golf Resort for the milestone 10th edition. Two rounds on a championship course with a Flooded Gums dinner and an $1800 bar tab.",
+    fullStory:``,
+    realWinner:"",
+    winners:["TBC"], losers:["TBC"] },
+
+  { num:"XII", year:"2022", loc:"Bonville Golf Resort", date:"September 2022", quote:"Back to Bonville",
+    blurb:"A return to Bonville for another fly-in weekend. Pairs ambrose on the Friday, individual stableford on Saturday, then taxis into town for AFL, Bledisloe & League.",
+    fullStory:``,
+    realWinner:"",
+    winners:["TBC"], losers:["TBC"] },
+
+  { num:"XIV", year:"2024", loc:"Noosa Heads, Sunshine Coast", date:"October 2024", quote:"Fore!",
+    blurb:"The GGT headed to Queensland for the first time — Ocean Breeze Resort in Noosa Heads. Two rounds across Twin Waters Golf Resort and Noosa Springs Golf Resort.",
+    fullStory:``,
+    realWinner:"",
+    winners:["TBC"], losers:["TBC"] },
 ];
 
 const fullMembers = ["Aaron Hickey","Nick Forsyth","Oli Finley","Mitch Corrigan","Matt Perkes","Nick Bateman","James Reeves","Will Dennis","George Davey","Nat Connor","James Wakefield","Mark Williams","Occy Austin","Hayden Bushell"];
@@ -536,33 +554,36 @@ const ledgerList = document.getElementById('ledgerList');
 editions.forEach(e=>{
   const div = document.createElement('div');
   div.className = 'entry';
-  const storyParagraphs = e.fullStory.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
+  const hasStory = e.fullStory && e.fullStory.trim().length > 0;
+  const storyParagraphs = hasStory ? e.fullStory.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('') : '';
   div.innerHTML = `
     <div class="numeral">${e.num}</div>
-    <div class="card">
+    <div class="card"${hasStory ? '' : ' style="cursor:default;"'}>
       <div class="card-header">
         <div class="meta">
           <span class="loc">${e.loc}</span>
           <span class="date mono">${e.date}</span>
         </div>
-        <span class="expand-icon">Full Story <span class="chevron">&#9660;</span></span>
+        ${hasStory ? '<span class="expand-icon">Full Story <span class="chevron">&#9660;</span></span>' : '<span class="expand-icon" style="opacity:0.4;">Story Coming Soon</span>'}
       </div>
       <p class="quote">"${e.quote}"</p>
       <p class="blurb">${e.blurb}</p>
-      <div class="full-story">
+      ${hasStory ? `<div class="full-story">
         <div class="full-story-inner">
           ${storyParagraphs}
           ${e.realWinner ? `<p class="real-winner">Real winner: ${e.realWinner}</p>` : ''}
         </div>
-      </div>
+      </div>` : ''}
       <div class="results">
         <div><span class="label">Winners</span>${e.winners.join(' & ')}</div>
         <div><span class="label">Losers</span>${e.losers.join(', ')}</div>
       </div>
     </div>`;
-  div.querySelector('.card').addEventListener('click', ()=>{
-    div.classList.toggle('open');
-  });
+  if(hasStory){
+    div.querySelector('.card').addEventListener('click', ()=>{
+      div.classList.toggle('open');
+    });
+  }
   ledgerList.appendChild(div);
 });
 

@@ -53,11 +53,8 @@
   }
   nav .wrap{ display:flex; align-items:center; justify-content:space-between; padding:14px 28px;}
   .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; letter-spacing:0.08em;}
-  .brand .crest-mini{
-    width:30px; height:30px; border-radius:50%;
-    border:1.5px solid var(--brass);
-    display:flex; align-items:center; justify-content:center;
-    font-size:0.6rem; color:var(--brass-bright); font-weight:700;
+  .brand .brand-logo{
+    width:30px; height:auto;
   }
   nav ul{ display:flex; gap:28px; list-style:none; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; }
   nav ul a{ opacity:0.8; transition:opacity .2s, color .2s; padding:4px 0; border-bottom:1px solid transparent;}
@@ -98,22 +95,14 @@
     padding:140px 24px 80px;
   }
   .crest{
-    width:148px; height:148px; border-radius:50%;
-    border:2px solid var(--brass);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    width:180px; height:auto;
     margin-bottom:34px;
     position:relative;
-    background: radial-gradient(circle at 50% 30%, rgba(201,162,39,0.12), transparent 70%);
-    box-shadow: 0 0 0 6px rgba(201,162,39,0.06), 0 0 40px rgba(201,162,39,0.08);
+    filter: drop-shadow(0 0 30px rgba(201,162,39,0.15));
   }
-  .crest::before{
-    content:"";
-    position:absolute; inset:8px;
-    border:1px solid rgba(201,162,39,0.4);
-    border-radius:50%;
+  .crest img{
+    width:100%; height:auto; display:block;
   }
-  .crest .gg{ font-family:'Fraunces',serif; font-size:2rem; font-weight:700; color:var(--brass-bright); letter-spacing:0.04em; line-height:1;}
-  .crest .est{ font-size:0.6rem; letter-spacing:0.25em; color:var(--cream-dim); margin-top:6px; font-family:'Public Sans';}
   header.hero h1{
     font-size:clamp(2.4rem, 6vw, 4.4rem);
     color:var(--cream);
@@ -300,9 +289,7 @@
     .section{ padding:60px 0 24px; }
 
     /* Hero crest */
-    .crest{ width:110px; height:110px; margin-bottom:22px; }
-    .crest .gg{ font-size:1.5rem; }
-    .crest .est{ font-size:0.5rem; }
+    .crest{ width:120px; margin-bottom:18px; }
 
     /* Plaque */
     .plaque{ padding:22px 16px; }
@@ -344,7 +331,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand"><span class="crest-mini">GG</span> GGT</div>
+    <div class="brand"><img src="logo.png" alt="GGT" class="brand-logo"> GGT</div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
     <ul id="navList">
       <li><a href="#upcoming">Upcoming</a></li>
@@ -358,8 +345,7 @@
 
 <header class="hero">
   <div class="crest">
-    <div class="gg">GGT</div>
-    <div class="est">EST. 2012</div>
+    <img src="logo.png" alt="GGT — Gentlemen's Golf Tour, Est. 2012">
   </div>
   <h1>Gentlemen's<br>Golf Tour</h1>
   <p class="sub">Ten editions deep. A trophy nobody remembers the rules for, and a buck who's never once seen it coming.</p>

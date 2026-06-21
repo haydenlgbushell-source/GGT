@@ -446,14 +446,7 @@
     user-select:none;
   }
   .tile-info{ flex:1; min-width:0; }
-  .tile-rank{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:28px; height:28px;
-    background:var(--brass);
-    color:var(--felt-dark);
-    font-family:'Fraunces',serif; font-weight:700; font-size:0.85rem;
-    border-radius:3px; margin-bottom:6px;
-  }
+  .tile-rank{ display:none; }
   .tile-name{
     font-family:'Fraunces',serif; font-weight:600;
     font-size:1.15rem; color:var(--cream); line-height:1.2;
@@ -527,14 +520,7 @@
     color:var(--brass); opacity:0.3;
   }
   .profile-header-info{ flex:1; padding-top:4px; }
-  .profile-number{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:34px; height:34px;
-    background:var(--brass);
-    color:var(--felt-dark);
-    font-family:'Fraunces',serif; font-weight:700; font-size:1rem;
-    border-radius:3px; margin-bottom:6px;
-  }
+  .profile-number{ display:none; }
   .profile-name{
     font-family:'Fraunces',serif; font-weight:600;
     font-size:1.5rem; color:var(--cream); line-height:1.2;
@@ -652,49 +638,11 @@
   }
   .lightbox .close-lb:hover{ opacity:1; }
 
-  /* GALLERY */
-  .upload-bar{
-    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
-    border:1px dashed var(--line); padding:20px 24px; margin-bottom:30px;
-  }
-  .upload-bar input[type=file]{ display:none; }
-  .upload-label{
-    cursor:pointer; padding:11px 22px; border:1px solid var(--brass); font-size:0.75rem;
-    letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-bright);
-    transition:all .2s;
-  }
-  .upload-label:hover{ background:var(--brass); color:var(--felt-dark);}
-  .upload-hint{ font-size:0.82rem; color:var(--cream-dim); }
-  .gallery-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:10px;
-  }
-  .gallery-grid .tile{
-    position:relative; aspect-ratio:1; overflow:hidden; border:1px solid var(--line);
-    background:rgba(255,255,255,0.03);
-  }
-  .gallery-grid .tile img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(0.92) contrast(1.04);}
-  .gallery-grid .tile .del{
-    position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%;
-    background:rgba(12,32,24,0.75); color:var(--cream); border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.85rem;
-    opacity:0; transition:opacity .2s;
-  }
-  .gallery-grid .tile:hover .del{ opacity:1;}
-  .empty-state{
-    border:1px dashed var(--line); padding:50px 20px; text-align:center; color:var(--cream-dim);
-    font-style:italic; font-family:'Fraunces',serif;
-  }
-
   footer{
     margin-top:100px; padding:50px 0 40px; border-top:1px solid var(--line); text-align:center;
   }
   footer .tagline{ font-family:'Fraunces',serif; font-style:italic; color:var(--cream-dim); margin-bottom:10px;}
   footer .fine{ font-size:0.72rem; color:rgba(241,233,210,0.4); letter-spacing:0.05em;}
-
-  /* Touch devices: always show gallery delete buttons */
-  @media (hover:none){
-    .gallery-grid .tile .del{ opacity:0.85; }
-  }
 
   @media (max-width:600px){
     header.hero{ padding:100px 16px 60px; }
@@ -729,19 +677,12 @@
     .photo-collage .photo:nth-child(even){ transform:rotate(2deg) !important; }
     .photo-collage .photo:last-child{ width:65% !important; }
 
-    /* Gallery */
-    .gallery-grid{ grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:6px; }
-    .gallery-grid .tile .del{ opacity:0.85; }
-    .upload-bar{ padding:14px; gap:8px; }
-    .upload-label{ padding:10px 16px; font-size:0.7rem; }
-    .upload-hint{ font-size:0.75rem; }
-
     /* Members */
     .member-tiles{ grid-template-columns:1fr; gap:10px; }
     .member-tile{ padding:14px 16px; gap:14px; }
     .tile-photo{ width:60px; height:74px; }
     .tile-photo .tile-initials{ font-size:1.3rem; }
-    .tile-rank{ width:24px; height:24px; font-size:0.75rem; }
+    .tile-rank{ display:none; }
     .tile-name{ font-size:1rem; }
     .tile-nickname{ font-size:0.76rem; }
     .tile-trips{ font-size:0.62rem; }
@@ -800,7 +741,6 @@
       <li><a href="#ledger">History</a></li>
       <li><a href="#winners">Honour Board</a></li>
       <li><a href="#members">Members</a></li>
-      <li><a href="#gallery">Gallery</a></li>
     </ul>
   </div>
 </nav>
@@ -911,20 +851,6 @@
         <div class="member-tiles" id="provMembers"></div>
       </div>
     </div>
-  </section>
-
-  <section class="section" id="gallery">
-    <span class="eyebrow">Evidence</span>
-    <h2>Tour Gallery</h2>
-    <p class="lede">Photos from the road — what goes on tour stays on tour, except for here. Shared with the full group.</p>
-
-    <div class="upload-bar">
-      <label class="upload-label" for="photoInput">+ Add Photo</label>
-      <input type="file" id="photoInput" accept="image/*" multiple>
-      <span class="upload-hint" id="uploadHint">JPG or PNG, visible to everyone on the tour.</span>
-    </div>
-
-    <div id="galleryWrap"></div>
   </section>
 
   <footer>
@@ -1378,80 +1304,6 @@ fullMembers.forEach((m,i)=> renderTile(fullGrid, m, attendance[m], i+1));
 
 const provGrid = document.getElementById('provMembers');
 provMembers.forEach((m,i)=> renderTile(provGrid, m.name, m.trips, fullMembers.length + i + 1, m.tag));
-
-// ---------- GALLERY (localStorage) ----------
-const galleryWrap = document.getElementById('galleryWrap');
-const photoInput = document.getElementById('photoInput');
-const uploadHint = document.getElementById('uploadHint');
-const GALLERY_KEY = 'ggt-gallery-photos';
-
-function loadGallery(){
-  let photos = [];
-  try{
-    const stored = localStorage.getItem(GALLERY_KEY);
-    if(stored){ photos = JSON.parse(stored); }
-  }catch(err){
-    photos = [];
-  }
-  renderGallery(photos);
-}
-
-function renderGallery(photos){
-  if(!photos.length){
-    galleryWrap.innerHTML = `<div class="empty-state">No photos yet. Be the first to add some evidence from the road.</div>`;
-    return;
-  }
-  const grid = document.createElement('div');
-  grid.className = 'gallery-grid';
-  photos.forEach(p=>{
-    const tile = document.createElement('div');
-    tile.className = 'tile';
-    tile.innerHTML = `<img src="${p.data}" alt="GGT tour photo"><div class="del" data-id="${p.id}">✕</div>`;
-    grid.appendChild(tile);
-  });
-  galleryWrap.innerHTML = '';
-  galleryWrap.appendChild(grid);
-
-  grid.querySelectorAll('.del').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      try{
-        let photos = JSON.parse(localStorage.getItem(GALLERY_KEY) || '[]');
-        photos = photos.filter(p=> p.id !== btn.dataset.id);
-        localStorage.setItem(GALLERY_KEY, JSON.stringify(photos));
-        renderGallery(photos);
-      }catch(err){ console.error('Delete failed', err); }
-    });
-  });
-}
-
-photoInput.addEventListener('change', async (e)=>{
-  const files = Array.from(e.target.files || []);
-  if(!files.length) return;
-  uploadHint.textContent = 'Uploading…';
-  try{
-    let photos = JSON.parse(localStorage.getItem(GALLERY_KEY) || '[]');
-
-    for(const file of files){
-      const dataUrl = await new Promise((resolve, reject)=>{
-        const reader = new FileReader();
-        reader.onload = ()=> resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      photos.push({ id: Date.now()+'-'+Math.random().toString(36).slice(2,8), data: dataUrl });
-    }
-
-    localStorage.setItem(GALLERY_KEY, JSON.stringify(photos));
-    renderGallery(photos);
-    uploadHint.textContent = 'JPG or PNG, visible to everyone on the tour.';
-  }catch(err){
-    console.error(err);
-    uploadHint.textContent = 'Upload failed — try a smaller image.';
-  }
-  photoInput.value = '';
-});
-
-loadGallery();
 
 // ---------- PHOTO COLLAGE LIGHTBOX ----------
 const lightbox = document.getElementById('lightbox');

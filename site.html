@@ -295,6 +295,65 @@
   }
   .prov-tag{ font-family:'Public Sans'; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--maroon-bright); border:1px solid var(--maroon-bright); padding:2px 8px; border-radius:20px; margin-left:auto;}
 
+  /* EDITION PHOTO COLLAGE */
+  .edition-photos{
+    margin-top:20px; padding-top:20px;
+    border-top:1px dashed var(--line);
+  }
+  .edition-photos .photos-label{
+    font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--brass-bright); margin-bottom:12px; display:block;
+  }
+  .photo-collage{
+    position:relative; height:680px; margin:10px 0;
+  }
+  .photo-collage .photo{
+    position:absolute; overflow:hidden;
+    border:4px solid rgba(241,233,210,0.85);
+    background:var(--cream);
+    box-shadow:0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.25);
+    cursor:pointer;
+    transition:transform .35s ease, box-shadow .35s ease, z-index 0s;
+    z-index:1;
+  }
+  .photo-collage .photo:hover{
+    transform:scale(1.08) !important;
+    box-shadow:0 12px 40px rgba(0,0,0,0.55), 0 0 20px rgba(201,162,39,0.15);
+    z-index:10;
+  }
+  .photo-collage .photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(0.92) contrast(1.04);
+  }
+  .photo-collage .photo:hover img{ filter:saturate(1) contrast(1.08); }
+  .photo-collage .photo::after{
+    content:""; position:absolute;
+    width:30px; height:10px;
+    background:rgba(201,162,39,0.5);
+    top:-1px; left:50%; transform:translateX(-50%);
+    border-radius:0 0 2px 2px; opacity:0;
+  }
+  .photo-collage .photo.pinned::after{ opacity:1; }
+
+  .lightbox{
+    display:none; position:fixed; inset:0; z-index:100;
+    background:rgba(6,20,12,0.92); backdrop-filter:blur(8px);
+    align-items:center; justify-content:center; cursor:pointer;
+  }
+  .lightbox.active{ display:flex; }
+  .lightbox img{
+    max-width:90vw; max-height:88vh; object-fit:contain;
+    border:1px solid var(--line);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+  .lightbox .close-lb{
+    position:absolute; top:20px; right:24px;
+    font-size:1.4rem; color:var(--brass-bright);
+    background:none; border:none; cursor:pointer;
+    font-family:serif; opacity:0.7; transition:opacity .2s;
+  }
+  .lightbox .close-lb:hover{ opacity:1; }
+
   /* GALLERY */
   .upload-bar{
     display:flex; align-items:center; gap:16px; flex-wrap:wrap;
@@ -360,6 +419,17 @@
     .entry .expand-icon{ font-size:0.63rem; margin-top:4px; width:100%; }
     .entry .results{ gap:10px; flex-direction:column; font-size:0.78rem; }
     .entry.open .full-story{ max-height:5000px; }
+
+    /* Photo collage mobile */
+    .photo-collage{ height:auto !important; display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+    .photo-collage .photo{
+      position:relative !important; top:auto !important; left:auto !important;
+      right:auto !important; bottom:auto !important;
+      width:calc(50% - 6px) !important; height:140px !important;
+    }
+    .photo-collage .photo:nth-child(odd){ transform:rotate(-2deg) !important; }
+    .photo-collage .photo:nth-child(even){ transform:rotate(2deg) !important; }
+    .photo-collage .photo:last-child{ width:65% !important; }
 
     /* Gallery */
     .gallery-grid{ grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:6px; }
@@ -514,8 +584,13 @@
 
   <footer>
     <p class="tagline">"What goes on tour stays on tour — which includes this document."</p>
-    <p class="fine mono">GGT &middot; Est. 2012 &middot; XIV Editions Strong</p>
+    <p class="fine mono">GGT &middot; Est. 2012 &middot; XV Editions Strong</p>
   </footer>
+
+  <div class="lightbox" id="lightbox">
+    <button class="close-lb">&times;</button>
+    <img src="" alt="Full size photo" id="lbImg">
+  </div>
 </main>
 
 <script>
@@ -687,7 +762,19 @@ Sunday and the weary gents got their breakfast and headed off to the airport sur
     blurb:"A return north to Nelson Bay — Nelson Bay Golf Club on Friday, Pacific Dunes on Saturday. Mantra Aqua Apartments, BYO Thai, and a courtesy bus to Shoal Bay Country Club.",
     fullStory:``,
     realWinner:"",
-    winners:["Matt Perkes","Andrew Davis"], losers:["TBC"] },
+    winners:["Matt Perkes","Andrew Davis"], losers:["TBC"],
+    photos:[
+      {src:"photos/ggt15/group.jpg", alt:"The group on the course", w:260,h:200, x:0,y:0, r:-4, z:3, pin:true},
+      {src:"photos/ggt15/green-selfie.jpg", alt:"On the green", w:200,h:155, x:26,y:15, r:2.5, z:2},
+      {src:"photos/ggt15/blazers.jpg", alt:"Winners in the blazers", w:175,h:230, xr:6,y:0, r:-2, z:4, pin:true},
+      {src:"photos/ggt15/foursome.jpg", alt:"Foursome at Pacific Dunes", w:210,h:160, x:3,y:190, r:3, z:2},
+      {src:"photos/ggt15/course.jpg", alt:"At the first tee", w:195,h:150, x:28,y:185, r:-3.5, z:5, pin:true},
+      {src:"photos/ggt15/photo6.jpg", alt:"Arriving at the course", w:180,h:235, xr:10,y:170, r:2, z:3},
+      {src:"photos/ggt15/photo7.jpg", alt:"Beers at the pub", w:235,h:170, x:0,y:370, r:-2.5, z:4, pin:true},
+      {src:"photos/ggt15/photo8.jpg", alt:"Hard earned thirst", w:175,h:135, x:27,y:390, r:4, z:2},
+      {src:"photos/ggt15/photo9.jpg", alt:"On the green", w:190,h:245, xr:18,y:400, r:-3, z:5},
+      {src:"photos/ggt15/photo10.jpg", alt:"Full group photo", w:280,h:195, x:8,yb:0, r:1.5, z:6, pin:true},
+    ] },
 ];
 
 const attendance = {
@@ -721,29 +808,43 @@ editions.forEach(e=>{
   const storyParagraphs = hasStory ? e.fullStory.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('') : '';
   div.innerHTML = `
     <div class="numeral">${e.num}</div>
-    <div class="card"${hasStory ? '' : ' style="cursor:default;"'}>
+    <div class="card"${hasStory || e.photos ? '' : ' style="cursor:default;"'}>
       <div class="card-header">
         <div class="meta">
           <span class="loc">${e.loc}</span>
           <span class="date mono">${e.date}</span>
         </div>
-        ${hasStory ? '<span class="expand-icon">Full Story <span class="chevron">&#9660;</span></span>' : '<span class="expand-icon" style="opacity:0.4;">Story Coming Soon</span>'}
+        ${hasStory || e.photos ? '<span class="expand-icon">Full Story <span class="chevron">&#9660;</span></span>' : '<span class="expand-icon" style="opacity:0.4;">Story Coming Soon</span>'}
       </div>
       <p class="quote">"${e.quote}"</p>
       <p class="blurb">${e.blurb}</p>
-      ${hasStory ? `<div class="full-story">
-        <div class="full-story-inner">
+      ${hasStory || e.photos ? `<div class="full-story">
+        ${hasStory ? `<div class="full-story-inner">
           ${storyParagraphs}
           ${e.realWinner ? `<p class="real-winner">Real winner: ${e.realWinner}</p>` : ''}
-        </div>
+        </div>` : '<div class="full-story-inner"><p style="font-style:italic;opacity:0.5;">Story coming soon...</p></div>'}
+        ${e.photos ? `<div class="edition-photos">
+          <span class="photos-label">Tour Photos</span>
+          <div class="photo-collage">
+            ${e.photos.map(p => {
+              let pos = '';
+              if(p.x !== undefined) pos += `left:${p.x}%;`;
+              if(p.xr !== undefined) pos += `right:${p.xr}%;`;
+              if(p.y !== undefined) pos += `top:${p.y}px;`;
+              if(p.yb !== undefined) pos += `bottom:${p.yb}px;`;
+              return `<div class="photo${p.pin ? ' pinned' : ''}" style="width:${p.w}px;height:${p.h}px;${pos}transform:rotate(${p.r}deg);z-index:${p.z};"><img src="${p.src}" alt="${p.alt}"></div>`;
+            }).join('')}
+          </div>
+        </div>` : ''}
       </div>` : ''}
       <div class="results">
         <div><span class="label">Winners</span>${e.winners.join(' & ')}</div>
         <div><span class="label">Losers</span>${e.losers.join(', ')}</div>
       </div>
     </div>`;
-  if(hasStory){
-    div.querySelector('.card').addEventListener('click', ()=>{
+  if(hasStory || e.photos){
+    div.querySelector('.card').addEventListener('click', (ev)=>{
+      if(ev.target.closest('.photo')) return;
       div.classList.toggle('open');
     });
   }
@@ -873,6 +974,20 @@ photoInput.addEventListener('change', async (e)=>{
 });
 
 loadGallery();
+
+// ---------- PHOTO COLLAGE LIGHTBOX ----------
+const lightbox = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+document.querySelectorAll('.photo-collage .photo').forEach(p => {
+  p.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    lbImg.src = p.querySelector('img').src;
+    lightbox.classList.add('active');
+  });
+});
+lightbox.addEventListener('click', () => {
+  lightbox.classList.remove('active');
+});
 </script>
 </body>
 </html>

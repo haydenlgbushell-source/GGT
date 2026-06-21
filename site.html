@@ -459,6 +459,120 @@
   }
   .prov-tag{ font-family:'Public Sans'; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--maroon-bright); border:1px solid var(--maroon-bright); padding:2px 8px; border-radius:20px; margin-left:auto;}
 
+  /* MEMBER PROFILE CARD MODAL */
+  .profile-overlay{
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(6,20,12,0.88); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .profile-overlay.active{ display:flex; }
+  .profile-card{
+    position:relative;
+    background:var(--felt);
+    border:1px solid var(--line);
+    border-radius:4px;
+    max-width:420px; width:92%;
+    box-shadow:0 24px 60px rgba(0,0,0,0.6), 0 0 30px rgba(201,162,39,0.08);
+    cursor:default;
+    animation:profileIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    overflow:hidden;
+  }
+  @keyframes profileIn {
+    from { opacity:0; transform:translateY(24px) scale(0.95); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+  }
+  .profile-close{
+    position:absolute; top:12px; right:14px; z-index:3;
+    background:none; border:none; cursor:pointer;
+    font-size:1.3rem; color:var(--brass-bright); opacity:0.6;
+    font-family:serif; transition:opacity .2s;
+  }
+  .profile-close:hover{ opacity:1; }
+  .profile-header{
+    display:flex; gap:20px; padding:24px 24px 18px;
+    align-items:flex-start;
+    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 100%);
+  }
+  .profile-photo{
+    width:110px; height:130px; flex-shrink:0;
+    border:3px solid var(--line);
+    border-radius:3px;
+    background:var(--felt-dark);
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .profile-photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(0.9) contrast(1.05);
+  }
+  .profile-photo .photo-placeholder{
+    font-family:'Fraunces',serif; font-size:2.2rem;
+    color:var(--brass); opacity:0.3;
+  }
+  .profile-header-info{ flex:1; padding-top:4px; }
+  .profile-number{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:34px; height:34px;
+    background:var(--brass);
+    color:var(--felt-dark);
+    font-family:'Fraunces',serif; font-weight:700; font-size:1rem;
+    border-radius:3px; margin-bottom:6px;
+  }
+  .profile-name{
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:1.5rem; color:var(--cream); line-height:1.2;
+  }
+  .profile-nickname{
+    font-family:'Fraunces',serif; font-style:italic;
+    font-size:0.88rem; color:var(--brass-bright); margin-top:2px;
+  }
+  .profile-stats{
+    padding:0 24px 20px;
+  }
+  .profile-stats table{
+    width:100%; border-collapse:collapse;
+  }
+  .profile-stats tr{
+    border-bottom:1px solid var(--line);
+  }
+  .profile-stats tr:last-child{ border-bottom:none; }
+  .profile-stats td{
+    padding:9px 0; font-size:0.88rem;
+  }
+  .profile-stats td:first-child{
+    font-family:'Public Sans',sans-serif; font-weight:600;
+    color:var(--cream); letter-spacing:0.02em; width:45%;
+  }
+  .profile-stats td:last-child{
+    font-family:'Fraunces',serif;
+    color:var(--cream-dim); text-align:right;
+  }
+  .profile-tours{
+    padding:0 24px 22px;
+  }
+  .profile-tours-label{
+    font-family:'Public Sans',sans-serif; font-size:0.62rem;
+    letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--brass-bright); margin-bottom:8px; display:block;
+  }
+  .profile-tours .pill{
+    font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.05em;
+    color:var(--brass-bright); border:1px solid var(--line); padding:2px 7px;
+    border-radius:2px; background:rgba(201,162,39,0.06);
+    display:inline-block; margin:0 4px 4px 0;
+  }
+  .profile-tours .pill.win{
+    background:rgba(201,162,39,0.2); border-color:var(--brass);
+    color:var(--cream);
+  }
+  @media(max-width:600px){
+    .profile-card{ max-width:95%; }
+    .profile-header{ flex-direction:column; align-items:center; text-align:center; gap:14px; }
+    .profile-photo{ width:100px; height:120px; }
+    .profile-name{ font-size:1.3rem; }
+  }
+
   /* EDITION PHOTO COLLAGE */
   .edition-photos{
     margin-top:20px; padding-top:20px;
@@ -766,6 +880,12 @@
     <p class="fine mono">GGT &middot; Est. 2012 &middot; XV Editions Strong</p>
   </footer>
 
+  <div class="profile-overlay" id="profileOverlay">
+    <div class="profile-card" id="profileCard">
+      <button class="profile-close">&times;</button>
+    </div>
+  </div>
+
   <div class="lightbox" id="lightbox">
     <button class="close-lb">&times;</button>
     <img src="" alt="Full size photo" id="lbImg">
@@ -978,6 +1098,25 @@ const provMembers = [
   { name:"Dave Smith", tag:"Junior VP of Provisionals", trips:["XII","XIII","XIV"] },
 ];
 
+const memberProfiles = {
+  "Aaron Hickey":     { nickname:"Hicks", handicap:"18", bestRound:"81", homeCourse:"Castle Hill CC", favClub:"7 Iron", drink:"Vodka Lime Soda", photo:"" },
+  "Nick Forsyth":     { nickname:"Forsy", handicap:"22", bestRound:"89", homeCourse:"Stonecutters Ridge", favClub:"Driver", drink:"Pale Ale", photo:"" },
+  "Oli Finley":       { nickname:"Oli", handicap:"28", bestRound:"95", homeCourse:"Pennant Hills", favClub:"Putter", drink:"Espresso Martini", photo:"" },
+  "Mitch Corrigan":   { nickname:"Mitch", handicap:"20", bestRound:"86", homeCourse:"Castle Hill CC", favClub:"5 Wood", drink:"Canadian Club", photo:"" },
+  "Matt Perkes":      { nickname:"Perksey", handicap:"16", bestRound:"78", homeCourse:"Lynwood CC", favClub:"56° Wedge", drink:"Schooner of New", photo:"" },
+  "Nick Bateman":     { nickname:"Batesy", handicap:"19", bestRound:"84", homeCourse:"Castle Hill CC", favClub:"Driver", drink:"James Squire", photo:"" },
+  "James Reeves":     { nickname:"Reevesy", handicap:"15", bestRound:"77", homeCourse:"Lynwood CC", favClub:"3 Wood", drink:"Peroni", photo:"" },
+  "Will Dennis":      { nickname:"Will", handicap:"24", bestRound:"92", homeCourse:"Castle Hill CC", favClub:"7 Iron", drink:"VB", photo:"" },
+  "George Davey":     { nickname:"Davo", handicap:"26", bestRound:"94", homeCourse:"Stonecutters Ridge", favClub:"Putter", drink:"Tooheys New", photo:"" },
+  "Nat Connor":       { nickname:"Burger", handicap:"21", bestRound:"87", homeCourse:"Castle Hill CC", favClub:"Gap Wedge", drink:"Guinness", photo:"" },
+  "James Wakefield":  { nickname:"Wakey", handicap:"30", bestRound:"99", homeCourse:"Pennant Hills", favClub:"5 Iron", drink:"Vodka Soda", photo:"" },
+  "Mark Williams":    { nickname:"Jazz", handicap:"23", bestRound:"90", homeCourse:"Castle Hill CC", favClub:"6 Iron", drink:"Corona", photo:"" },
+  "Occy Austin":      { nickname:"Occy", handicap:"25", bestRound:"93", homeCourse:"Castle Hill CC", favClub:"Driver", drink:"Whisky Dry", photo:"" },
+  "Hayden Bushell":   { nickname:"Bushy", handicap:"20", bestRound:"85", homeCourse:"Lynwood CC", favClub:"Pitching Wedge", drink:"Pale Ale", photo:"" },
+  "Chris Yarrington": { nickname:"Yazza", handicap:"22", bestRound:"88", homeCourse:"Stonecutters Ridge", favClub:"8 Iron", drink:"Carlton Dry", photo:"" },
+  "Dave Smith":       { nickname:"Smithy", handicap:"27", bestRound:"96", homeCourse:"Pennant Hills", favClub:"Driver", drink:"Great Northern", photo:"" },
+};
+
 // ---------- RENDER LEDGER ----------
 const ledgerList = document.getElementById('ledgerList');
 editions.forEach(e=>{
@@ -1082,6 +1221,56 @@ boardObserver.observe(honourBoard);
 const editionMap = {};
 editions.forEach(e=>{ editionMap[e.num] = e; });
 
+const profileOverlay = document.getElementById('profileOverlay');
+const profileCard = document.getElementById('profileCard');
+
+function getWins(name){
+  return editions.filter(e=> e.winners.includes(name)).map(e=>e.num);
+}
+
+function showProfile(name, trips){
+  const p = memberProfiles[name];
+  if(!p) return;
+  const wins = getWins(name);
+  const memberNum = Object.keys(memberProfiles).indexOf(name) + 1;
+  const initials = name.split(' ').map(w=>w[0]).join('');
+  profileCard.innerHTML = `
+    <button class="profile-close">&times;</button>
+    <div class="profile-header">
+      <div class="profile-photo">
+        ${p.photo ? `<img src="${p.photo}" alt="${name}">` : `<span class="photo-placeholder">${initials}</span>`}
+      </div>
+      <div class="profile-header-info">
+        <div class="profile-number">${memberNum}</div>
+        <div class="profile-name">${name}</div>
+        <div class="profile-nickname">"${p.nickname}"</div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <table>
+        <tr><td>Handicap</td><td>${p.handicap}</td></tr>
+        <tr><td>Best Round</td><td>${p.bestRound}</td></tr>
+        <tr><td>Tours Played</td><td>${trips.length} / ${editions.length}</td></tr>
+        <tr><td>Wins</td><td>${wins.length}</td></tr>
+        <tr><td>Home Course</td><td>${p.homeCourse}</td></tr>
+        <tr><td>Favourite Club</td><td>${p.favClub}</td></tr>
+        <tr><td>Go-To Drink</td><td>${p.drink}</td></tr>
+      </table>
+    </div>
+    <div class="profile-tours">
+      <span class="profile-tours-label">Tours Attended</span>
+      ${trips.map(n=>`<span class="pill${wins.includes(n) ? ' win' : ''}">${n}</span>`).join('')}
+    </div>`;
+  profileOverlay.classList.add('active');
+  profileCard.querySelector('.profile-close').addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    profileOverlay.classList.remove('active');
+  });
+}
+profileOverlay.addEventListener('click', (ev)=>{
+  if(ev.target === profileOverlay) profileOverlay.classList.remove('active');
+});
+
 function renderMember(ul, name, trips, dotColor, extraHtml){
   const li = document.createElement('li');
   const tripDetails = trips.map(num=>{
@@ -1101,7 +1290,15 @@ function renderMember(ul, name, trips, dotColor, extraHtml){
         ${tripDetails}
       </div>
     </div>`;
-  li.addEventListener('click', ()=>{ li.classList.toggle('open'); });
+  const nameEl = li.querySelector('.member-name');
+  nameEl.style.cursor = 'pointer';
+  nameEl.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    showProfile(name, trips);
+  });
+  li.addEventListener('click', (ev)=>{
+    if(!ev.target.closest('.member-name')) li.classList.toggle('open');
+  });
   ul.appendChild(li);
 }
 

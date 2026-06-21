@@ -873,6 +873,16 @@
 </main>
 
 <script>
+// ---------- AUTH GATE ----------
+(function(){
+  var k = [66,117,99,107,87,105,108,108,70,117,99,107];
+  var s = sessionStorage.getItem('ggt-auth');
+  if(s !== String.fromCharCode.apply(null,k)){
+    window.location.href = 'index.html';
+    return;
+  }
+})();
+
 // ---------- MOBILE NAV ----------
 const navToggle = document.getElementById('navToggle');
 const navList = document.getElementById('navList');
@@ -925,7 +935,7 @@ At the end of the 9 holes there was a come-to-Jesus meeting between the tour. Th
 
 His inspiring speech did nothing for Occy's playing capabilities where he crumbled and Burger/Nat managed to navigate the course and win the GGT. We went into town that night but given the weather there was not many people out and we decided to go back to our accommodation. There was no entertainment this trip but this didn't stop Forey getting his fix by ordering a XXXX Adult film on the room which was connected to the Buck's credit card.`,
     realWinner:"Mother nature",
-    winners:["Burger","Nat Connor"], losers:["Everyone else"] },
+    winners:["Oli Finley","Nat Connor"], losers:["Everyone else"] },
 
   { num:"IV", year:"2013", loc:"Callala Beach", date:"November 2013", quote:"Who the f*ck is Marty Swinyard?",
     blurb:"A scramble to fill numbers led to a mystery late inclusion. Kangaroo Valley's narrow fairways forced a playoff decided by a putting and chipping competition.",
@@ -971,7 +981,7 @@ You can't go to the Hunter Valley and not go to the wineries so a mini bus was b
 
 It was here the one thing provisional Smally did right was his selection of entertainment which was a clear best ever winner. Performance, looks, entertainment — and on the topic of entertainment, Batesy and Brad were sitting in the front row and got a bit more than what they were prepared for. Let's just say their eyes were a bit pink after it.`,
     realWinner:"Biotex Buck and Brad (BBB — not to be confused with Big Baller Brand)",
-    winners:["Aaron Hickey","Brad Drinkwater"], losers:["James R"] },
+    winners:["Aaron Hickey","Brad Drinkwater"], losers:["James Reeves"] },
 
   { num:"VIII", year:"2018", loc:"Koowindah Waters & Magenta Shores", date:"September 2018", quote:"Tay Tay",
     blurb:"First year with a team dress-up format and a Friday round counting toward the cup. A fluke tee shot in a fading-light playoff sealed it.",

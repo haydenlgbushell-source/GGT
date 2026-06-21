@@ -440,6 +440,7 @@
     var inp = document.getElementById('pwInput');
     var err = document.getElementById('pwError');
     if(check(inp.value)){
+      sessionStorage.setItem('ggt-auth', inp.value);
       window.location.href = 'site.html';
     } else {
       inp.classList.add('error');

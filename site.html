@@ -83,14 +83,15 @@
   @media (max-width:720px){
     .nav-toggle{ display:block; }
     nav ul{
-      position:fixed; top:60px; left:0; right:0;
+      position:fixed; top:60px; left:0; right:0; bottom:0;
       flex-direction:column; gap:0;
       background:rgba(12,32,24,0.97);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
       border-bottom:1px solid var(--line);
       max-height:0; overflow:hidden; transition:max-height .3s ease;
     }
-    nav ul.open{ max-height:340px; }
-    nav ul a{ display:block; padding:16px 28px; border-bottom:1px solid var(--line); border-radius:0;}
+    nav ul.open{ max-height:100vh; }
+    nav ul a{ display:block; padding:18px 28px; border-bottom:1px solid var(--line); border-radius:0; font-size:0.9rem; }
   }
 
   /* HERO */
@@ -582,10 +583,14 @@
     color:var(--cream);
   }
   @media(max-width:600px){
-    .profile-card{ max-width:95%; }
-    .profile-header{ flex-direction:column; align-items:center; text-align:center; gap:14px; }
+    .profile-overlay{ align-items:flex-start; padding:16px 0; overflow-y:auto; }
+    .profile-card{ max-width:95%; margin:auto; }
+    .profile-header{ flex-direction:column; align-items:center; text-align:center; gap:12px; padding:20px 20px 14px; }
     .profile-photo{ width:100px; height:120px; }
     .profile-name{ font-size:1.3rem; }
+    .profile-stats{ padding:0 20px 16px; }
+    .profile-stats td{ padding:8px 0; font-size:0.84rem; }
+    .profile-tours{ padding:0 20px 18px; }
   }
 
   /* EDITION PHOTO COLLAGE */
@@ -710,7 +715,7 @@
     .entry .card-header{ gap:6px; }
     .entry .meta{ gap:8px; }
     .entry .expand-icon{ font-size:0.63rem; margin-top:4px; width:100%; }
-    .entry .results{ gap:10px; flex-direction:column; font-size:0.78rem; }
+    .entry .results{ gap:10px; flex-direction:column; font-size:0.78rem; word-break:break-word; }
     .entry.open .full-story{ max-height:5000px; }
 
     /* Photo collage mobile */
@@ -742,13 +747,14 @@
     .tile-trips{ font-size:0.62rem; }
 
     /* Honour Board */
-    .board-grid{ grid-template-columns:repeat(2,1fr); padding:10px; }
-    .board-cell{ padding:14px 8px; }
-    .board-cell .cell-num{ font-size:1rem; }
-    .board-cell .cell-winner{ font-size:0.8rem; }
-    .tally-grid{ grid-template-columns:repeat(2,1fr); gap:4px 10px; }
-    .tally-name{ font-size:0.7rem; }
-    .tally-count{ font-size:0.78rem; }
+    .board-grid{ grid-template-columns:1fr; padding:10px; gap:0; }
+    .board-cell{ padding:16px 14px; }
+    .board-cell .cell-num{ font-size:1.1rem; }
+    .board-cell .cell-loc{ font-size:0.78rem; }
+    .board-cell .cell-winner{ font-size:0.88rem; }
+    .tally-grid{ grid-template-columns:repeat(2,1fr); gap:6px 14px; }
+    .tally-name{ font-size:0.75rem; }
+    .tally-count{ font-size:0.82rem; }
 
     /* Footer */
     footer{ margin-top:50px; padding:30px 0 28px; }
@@ -777,6 +783,9 @@
     border-color:var(--brass);
     background:rgba(201,162,39,0.15);
     color:var(--cream);
+  }
+  @media(max-width:600px){
+    .back-to-top{ bottom:20px; right:16px; width:40px; height:40px; font-size:1rem; }
   }
 </style>
 </head>

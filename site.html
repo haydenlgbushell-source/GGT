@@ -754,6 +754,30 @@
     footer{ margin-top:50px; padding:30px 0 28px; }
     footer .tagline{ font-size:0.9rem; padding:0 10px; }
   }
+
+  /* BACK TO TOP */
+  .back-to-top{
+    position:fixed; bottom:28px; right:28px; z-index:150;
+    width:46px; height:46px; border-radius:50%;
+    border:1px solid rgba(199,169,106,0.4);
+    background:rgba(12,32,24,0.85);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    color:var(--brass-bright);
+    font-size:1.2rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden;
+    transform:translateY(12px);
+    transition:opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4);
+  }
+  .back-to-top.visible{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
+  .back-to-top:hover{
+    border-color:var(--brass);
+    background:rgba(201,162,39,0.15);
+    color:var(--cream);
+  }
 </style>
 </head>
 <body>
@@ -909,6 +933,8 @@
     <button class="close-lb">&times;</button>
     <img src="" alt="Full size photo" id="lbImg">
   </div>
+
+  <button class="back-to-top" id="backToTop" title="Back to top">&#9650;</button>
 </main>
 
 <script>
@@ -1430,6 +1456,15 @@ document.querySelectorAll('.photo-collage .photo').forEach(p => {
 });
 lightbox.addEventListener('click', () => {
   lightbox.classList.remove('active');
+});
+
+// ---------- BACK TO TOP ----------
+const btt = document.getElementById('backToTop');
+window.addEventListener('scroll', ()=>{
+  btt.classList.toggle('visible', window.scrollY > 400);
+});
+btt.addEventListener('click', ()=>{
+  window.scrollTo({top:0, behavior:'smooth'});
 });
 </script>
 </body>

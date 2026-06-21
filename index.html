@@ -190,11 +190,37 @@
   .entry .card{
     border:1px solid var(--line); padding:26px 28px; background:rgba(31,74,54,0.28);
   }
-  .entry .meta{ display:flex; flex-wrap:wrap; gap:14px; align-items:baseline; margin-bottom:6px;}
+  .entry .card{ cursor:pointer; }
+  .entry .card-header{ display:flex; flex-wrap:wrap; gap:14px; align-items:baseline; margin-bottom:6px;}
+  .entry .meta{ display:flex; flex-wrap:wrap; gap:14px; align-items:baseline; flex:1;}
   .entry .loc{ font-family:'Fraunces',serif; font-size:1.3rem; color:var(--cream);}
   .entry .date{ font-size:0.78rem; color:var(--brass-bright); letter-spacing:0.08em;}
+  .entry .expand-icon{
+    font-size:0.7rem; color:var(--brass-bright); letter-spacing:0.1em; text-transform:uppercase;
+    display:flex; align-items:center; gap:6px; transition:opacity .2s;
+    font-family:'Public Sans'; opacity:0.7;
+  }
+  .entry .card:hover .expand-icon{ opacity:1; }
+  .entry .expand-icon .chevron{
+    display:inline-block; transition:transform .3s; font-size:0.85rem;
+  }
+  .entry.open .expand-icon .chevron{ transform:rotate(180deg); }
   .entry .quote{ font-style:italic; color:var(--cream-dim); font-family:'Fraunces',serif; margin:8px 0 14px; font-size:1.02rem;}
   .entry p.blurb{ color:var(--cream-dim); font-size:0.93rem; margin-bottom:16px;}
+  .entry .full-story{
+    max-height:0; overflow:hidden; transition:max-height .4s ease, opacity .3s ease;
+    opacity:0;
+  }
+  .entry.open .full-story{ max-height:2000px; opacity:1; }
+  .entry .full-story-inner{
+    padding-top:16px; margin-top:16px; border-top:1px dashed var(--line);
+    color:var(--cream-dim); font-size:0.93rem; line-height:1.7;
+  }
+  .entry .full-story-inner p{ margin-bottom:12px; }
+  .entry .full-story-inner .real-winner{
+    font-size:0.78rem; color:var(--brass-bright); letter-spacing:0.06em;
+    font-family:'Public Sans'; margin-top:14px; font-style:italic;
+  }
   .entry .results{ display:flex; gap:24px; flex-wrap:wrap; font-size:0.82rem; padding-top:14px; border-top:1px solid var(--line);}
   .entry .results .label{ color:var(--brass-bright); text-transform:uppercase; letter-spacing:0.1em; font-size:0.68rem; margin-right:6px;}
 
@@ -393,32 +419,110 @@ navList.querySelectorAll('a').forEach(a=>{
 // ---------- DATA ----------
 const editions = [
   { num:"I", year:"2012", loc:"Hunter Valley", date:"April 2012", quote:"The buck was born",
-    blurb:"Twelve gents headed into the unknown for the inaugural tour, staying at the Crowne Plaza with villas backing onto the 18th. A wine tour detour turned into the first official buck's night when the bus driver mistook the group for a hens party crew.",
+    blurb:"Twelve gents headed into the unknown for the inaugural tour, staying at the Crowne Plaza with villas backing onto the 18th. A wine tour detour turned into the first official buck's night.",
+    fullStory:`12 gents from Sydney ventured into the unknown, destination Hunter Valley and stayed at the Crowne Plaza. Friday night beers, pizza and footy was enjoyed before the kick off to the first round of the GGT. The villas at the stay and play Crowne Plaza course were perfectly situated halfway down the 18th Fairway and some of the lads wanted to have a practice prior to the first round by shooting a large section of the fairway practicing their approach shots to 18.
+
+The inaugural GGT was won in a close result by Aaron and Batesy. The boys had to be quick as the bus for the wine tour was waiting for us. We ended up only having time for 2 of the wineries given we settled into the Blue Buck Berry Hill vineyard. Here the buck was born. How you ask? The gents were enjoying a few pinots when a bus full of girls on a hens party arrived and one of the girls spoke to our judge Occy — rather than say we were on a golf trip, from that point on we were on a bucks trip.
+
+Our bus driver had to drag us away from the winery and dropped us at Harrigan's for more beers until we got kicked out thanks to Jazz flicking some random in the ear. The buck got a surprise when a gorgeous busty blonde girl entered one of the villas and subsequently lit him on fire and fully ripped the buttons off his shirt, made him eat a strawberry and cream lolly off her tit. What a start to the GGT.`,
+    realWinner:"The future 10-time buck",
     winners:["Aaron Hickey","Nick Bateman"], losers:["James Reeves"] },
+
   { num:"II", year:"2012", loc:"Mollymook", date:"October 2012", quote:"So, this is actually a tour now?",
-    blurb:"Trip two confirmed GGT was a real fixture. A hilly, tree-lined course at Tallwoods did the group no favours, and the carry-over champ backed up his win from edition one.",
+    blurb:"Trip two confirmed GGT was a real fixture. A hilly, tree-lined course at Tallwoods did the group no favours, and the carry-over champ backed up his win.",
+    fullStory:`The gents were young without kids, mortgages and as GGT #1 was a success a 2nd trip later in the year was organised. The standard Friday arvo traffic got the boys who left after 5pm which let the boys who left at lunch time to really get a head start — a BBQ was cooked, the RSL was visited. The accommodation it must be said was quite good with the location to the RSL key along with the beach. The lost bond was to be expected.
+
+Saturday the boys enjoyed a morning swim nursing a solid hangover. We had a lunchtime tee off where naturally some of us were late too at Tallwoods. This was a hilly course and as the name suggests, lots of tall trees surrounding the course and lining the holes which made it difficult for our bunch who are notorious for spraying them left and right hoping for a fortunate bounce back into the fairway.
+
+The carry over champ from the first GGT, Batesy, managed to carry his partner Mitch over the line to win for the 2nd time in a row. It will be interesting to read on further to see how Batesy has gone since...
+
+The boys went back to the RSL to have a feed and did not last too much longer after and were kicked out for being too noisy. It seems the theme of the Buck continued on into the trip and as how each buck needs to be treated, received another show. Amy was at least a big step up from the previous bird and provided the boys a show. She pulled out her toy whip which broke whilst whipping the buck, she then turned to use belts which was not welcomed.
+
+Amy departed leaving her jacket behind — and Perksey minded it for her for a year or so. The night continued on and we got up in the morning and high tailed it out of Mollymook.`,
+    realWinner:"The future 9-time buck",
     winners:["Mitch Corrigan","Nick Bateman"], losers:["James Reeves"] },
+
   { num:"III", year:"2013", loc:"Magenta Shores", date:"April 2013", quote:"Washout",
-    blurb:"The most chaotic round in tour history. Torrential rain forced a walk-only nine, a sideways downpour, and a clubhouse vote on whether to keep playing. They did. Burger and Connor took it home.",
+    blurb:"The most chaotic round in tour history. Torrential rain, a sideways downpour, and a clubhouse vote on whether to keep playing. Burger and Connor took it home.",
+    fullStory:`This GGT will go down in history as the most ridiculous round of golf in GGT history but first, we made our way up the F1 to the well renowned Magenta Shores stay and play resort. Footy and beers were had once the boys arrived on the Friday night. The weather that night was not great and nor was the forecast. Morning came and the rain hadn't stopped and was bucketing down — Plan B was being thought of and to go play ten pin bowling was an option.
+
+The weather the closer we got to our tee time improved and the rain stopped but the wind certainly didn't. We spoke to the pro shop about the prospect of playing and they just thought we were mad. We were allowed to play but no carts allowed so we had to walk. We got through about 7 holes before we could start to see the weather coming in again and the radar didn't look too promising either.
+
+At the end of the 9 holes there was a come-to-Jesus meeting between the tour. The rain was coming in sideways, puddles were forming on the greens. There was a great debate as to if we continue or not. Reevesy's lips were blue and shivering just saying "I want to go have a sausage roll." Oscar however was very vocal that we must go on given he was in the winning position at this stage, used a few "the ANZACs did it, we can." It was this inspiring quote that we continued on and finished the round — putting through puddles, holding onto our clubs for dear life so we didn't throw them when we swung. If Covid was around then we all would've got it after this day.
+
+His inspiring speech did nothing for Occy's playing capabilities where he crumbled and Burger/Nat managed to navigate the course and win the GGT. We went into town that night but given the weather there was not many people out and we decided to go back to our accommodation. There was no entertainment this trip but this didn't stop Forey getting his fix by ordering a XXXX Adult film on the room which was connected to the Buck's credit card.`,
+    realWinner:"Mother nature",
     winners:["Burger","Nat Connor"], losers:["Everyone else"] },
+
   { num:"IV", year:"2013", loc:"Callala Beach", date:"November 2013", quote:"Who the f*ck is Marty Swinyard?",
     blurb:"A scramble to fill numbers led to a mystery late inclusion. Kangaroo Valley's narrow fairways forced a playoff decided by a putting and chipping competition.",
-    winners:["Hayden Bushell","James Wakefield"], losers:["James Reeves"] },
+    fullStory:`Callala Beach (Batesy's holiday house) saw people pulling out at the last minute left right and centre — we were really scraping the barrel to ensure we had the right number of people for the tour. The day before we had a suggestion of Marty Swinyard, Marty who? We already had one Marty (Whybourne) who was useless at golf, we weren't sure if we wanted another one. Alas we were desperate and Marty Swinyard was a late inclusion.
+
+A group of gents took the Friday afternoon off to get a quick 9 in prior to the GGT main event. Wakefield got a bit close to a pond searching for one of his balls and fell in with all his belongings on him. As was tradition, beers and pizza was had and a solid lift occurred on the Friday night.
+
+Kangaroo Valley was the course for this tour and it proved to be quite a challenge with its steep gradient and narrow fairways. It came down to a playoff with the final hole being replayed. The green was huge and the approach shots still missed and after the first playoff ended equal it was then determined a putt and chip comp would decide the winners — which were the buck and Wake.
+
+From here it was all downhill. The balcony was unstable and out of bounds at Batesy's place — not suitable OHS standards for this pissed group. Post-game beers were had plus some rounds of spinning around and launching flaming golf balls into the ocean. This followed with some beers and a feed at the local RSL which were quickly kicked out of.
+
+Somehow entertainment was available in this area when having phone reception was even a stretch. A year on and it was clear that Amy had enjoyed the offseason by not sticking to her fitness program — once a crowd favourite she had now passed her used by date. Not much sleep was had that night and the boys high tailed it out the following morning. I'm still not sure who Marty Swinyard is?`,
+    realWinner:"Not the buck",
+    winners:["Hayden Bushell","James Wakefield"], losers:["James Reeves — still owes the winners for dreaming it wasn't fair"] },
+
   { num:"V", year:"2014", loc:"Port Stephens", date:"May 2014", quote:"Milf",
     blurb:"Go-karting before the round sorted the drivers from the passengers. A wide, forgiving course suited the group's spray-it-everywhere game.",
+    fullStory:`This GGT took us up to an area where we had not been before and have not been back too since, apart from maybe Perksey. But more on that later. We went up on the Friday evening once again getting stuck in Pacific Highway traffic. Beers, pizza and footy was had once again. The Saturday morning we had time to fill so we went and did some go-karting before our tee time. It was quick to see who in the group were the better, more riskier drivers and those who should not be on the road (Forey).
+
+Whilst there was action on the track there was more action off the track — a mum aka milf watching her kids drive around the same kart track. Perksey asked her for her number with the idea of meeting up later that night. We played golf that afternoon on a course that suits the GGTers given it has wide fairways and not too much water. Understandable why Perksey didn't win but it was Aaron & Jazzy Fizzle who managed to get the win.
+
+We went out to the local pub for a feed and beers and Perkes invited his new friend to come and meet us out for some drinks. Everything was going well and she was invited back to the apartment for some more drinks. The majority of the gents by this stage had retreated to their respective rooms or apartments. Perksey took this opportunity to take his lady friend into his room and spacious single bed and managed to do the business all whilst Jazz was in the bed next to him watching him and then him watching and listening intently — giving us the sound effects of what it sounded like the following morning. Whilst he didn't win the GGT he certainly won the MVP for the weekend and showed the buck how to f...`,
+    realWinner:"Milf",
     winners:["Jazz","Aaron Hickey"], losers:["James (wasn't there, but would've anyway)"] },
+
   { num:"VI", year:"2016", loc:"Bowral", date:"September 2016", quote:"The hiatus tour",
-    blurb:"A few quiet years off before Memorial Reeves got things back on track. The biggest provisional turnout yet, and the worst accommodation on record — a pub room above the main strip.",
-    winners:["Aaron Hickey","James Wakefield"], losers:["The Thai restaurant"] },
+    blurb:"A few quiet years off before Memorial Reeves got things back on track. The biggest provisional turnout yet, and the worst accommodation on record.",
+    fullStory:`The GGT took a few years hiatus due to a lack of organisation by the previous winners. Memorial Reeves got us back on track though, organising a trip 1hr away to Bowral. There was no Friday beers and pizzas — we were all to make our way down by mid morning on Saturday. It's no surprise that Occa was late and we had to wait for him by playing the first hole slowly. The course proved a challenging one with narrow fairways and long rough filled with snakes so many balls were lost. Aaron and Wakey managed to hit it straight enough to win this edition of GGT.
+
+It was here where we had the most Provisionals with Matt, Brad & Chriss. Since the first GGT, it's probably fair to say they weren't really noticed on the golf course but they were certainly noticed during the night festivities. Without a doubt the accommodation was the worst we have ever had — connected to one of the main pubs of the town. We checked into the pub, got our keys and then got stuck into the schooners whilst we waited for our booking at the Thai restaurant across the road.
+
+That private room at the back of the Thai restaurant has never been the same again after the shoeys of cask wine, people on shoulders and Oscar ruling on many chargors that were put forward. After we got kicked out we made our way back to the pub where punts and schooners were consumed along with Reeves losing all his clothes in a game of 1-up vs Wakey. Provisional Chris making his way home got lost even though it was 20 metres behind the pub where we were staying. There is an iconic photo of the provisional the morning after which fully depicts what the first trip on a GGT can do to you.`,
+    realWinner:"Provisional Chris",
+    winners:["Aaron Hickey","James Wakefield"], losers:["The Thai restaurant & Memorial Reeves"] },
+
   { num:"VII", year:"2017", loc:"Hunter Valley (Round 2)", date:"April 2017", quote:"BBB",
     blurb:"A return to where it all began. Ambrose stableford, a fireball-shot trick hole, and a 60-metre hole-out from Brad that decided the whole tour on the 18th.",
+    fullStory:`Because the Hunter was a great success last time it was time to come back and revisit both the Crowne Plaza and Blueberry Hills winery. We all know what happens on Friday night and that's what happened. We had a new provisional the trip — "Smally," an annoying English guy who didn't get invited again and has left the chat. Ambrose stableford was the format for this GGT and just 18 holes on the Saturday morning.
+
+There was a new feature on one of the holes early on the front nine where you had to have a shot of fireball and within 5 seconds hit your shot — this really got the heart started after a big night and straightened a few people up. It was a tight finish coming down the 18th but the deciding shot that ended up being the difference was Brad who played terribly all day and somehow managed to hole out from 60 metres.
+
+You can't go to the Hunter Valley and not go to the wineries so a mini bus was booked for three vineyards and turned out we just went to two, visiting the old faithful Blueberry Hill to recreate the first shot of the original GGT members. Harrigan's pub was the last stop of the tour and that's where we settled in for the remainder of the night until we were asked to leave and go back to our accommodation.
+
+It was here the one thing provisional Smally did right was his selection of entertainment which was a clear best ever winner. Performance, looks, entertainment — and on the topic of entertainment, Batesy and Brad were sitting in the front row and got a bit more than what they were prepared for. Let's just say their eyes were a bit pink after it.`,
+    realWinner:"Biotex Buck and Brad (BBB — not to be confused with Big Baller Brand)",
     winners:["Aaron Hickey","Brad"], losers:["James R"] },
+
   { num:"VIII", year:"2018", loc:"Koowindah Waters & Magenta Shores", date:"September 2018", quote:"Tay Tay",
-    blurb:"First year with a team dress-up format and a Friday round counting toward the cup. A fluke tee shot in a fading-light playoff sealed it for Mitch and Marky.",
-    winners:["Mitch Corrigan","Mark Williams"], losers:["The buck, again"] },
+    blurb:"First year with a team dress-up format and a Friday round counting toward the cup. A fluke tee shot in a fading-light playoff sealed it.",
+    fullStory:`GGT #8 saw us return up the F1 to play Koowindah Waters and revisit Magenta Shores in hopefully sunshine rather than torrential rain. This GGT saw a new format be introduced with a Friday round counting towards the cup (a pairs ambrose event), the pairings also dressed up in the same attire.
+
+Koowindah Waters as its name suggests has plenty of water which certainly caught teams out with many lost balls. After the first day the scores were relatively close and every team had an opportunity to win the next day in the individual best ball stableford. There was however one member who couldn't make the first day due to his desire to go to a Taylor Swift concert for his birthday — as is tradition beers and pizzas were had on the Friday night whilst we watched the league and Wakey sung along to Love Story.
+
+Saturday arrived and provided us with windy yet sunny skies, a big improvement on the last time we played there. It's known as a challenging course and it was no different on this day. Mitch and Marky were last coming into the day and pulled off a big comeback to force a playoff with Simmo & Baggot. The par 3 7th was the closest hole to the clubhouse and the 2 pairs went back to the tee to play off for the GGT Cup in front of all the teams.
+
+In the fading light there was no winner after the first playoff hole so the gents went back to tee for the 2nd time and it was then that Marky pulled off a fluke tee shot and putted to victory. The tour finished as a nightmare for the buck as he was tortured by some girl from the darkside and is still recovering.`,
+    realWinner:"Wakey and Tay Tay",
+    winners:["Mitch Corrigan","Mark Williams"], losers:["The buck, again — and his poor partner"] },
+
   { num:"IX", year:"2019", loc:"Newcastle", date:"October 2019", quote:"The Wallabies tour",
-    blurb:"Timed around a World Cup quarter-final and a bucks birthday. A miscount on the final scorecard handed it to Perksey and Nat after what looked like another tie.",
-    winners:["Matt Perkes","Nat Connor"], losers:["James Reeves did not come last (miracles happen)"] },
+    blurb:"Timed around a World Cup quarter-final and a buck's birthday. A miscount on the final scorecard handed it to Perksey and Nat.",
+    fullStory:`The lads again decided to go north for this edition of the GGT which also doubled as the Buck's birthday and the Wallabies QF appearance against England in the Rugby World Cup. We all got to Pacific Dunes on the Friday by mid-morning for the first round of this year's GGT. The same format as the latest trip was continued with Ambrose pairs and team dress-up. We had a Menalus provisional join this trip and it's fair to say we are still waiting on our discount codes for the bois.
+
+Sunny weather greeted us and some quality golf for once was played with some low scores being put forward by the pairs. That night we decided to leave our accommodation next to the airport to go and visit the local Meadowbank pub which had a great seafood basket according to Drew. Speaking of Drew who had missed the last few trips, he made his return and certainly made up for lost time this night by having to miss the following early morning tee off due to being quite ill.
+
+Drew finally made his way to the course on what was another cracking day. Given we were playing the same course as the day before, teams had the advantage of knowing where to hit and not to hit (not that most have that skill anyway). Individual stableford always makes it a bit harder but again some quality scores came in. After what we thought was another tie after 36 holes it was worked out that one person had miscounted their score and therefore Perksey and Nat were declared the winners.
+
+We all put some money together to punt on the Everest but unfortunately none of us selected YES YES YES and we went NO NO NO. We headed back to the hotel for a quick change before going into Newie to watch the Wallabies get flogged by England. This certainly took the wind out of our sails but went out looking for some fluff...`,
+    realWinner:"Perksey & Nat",
+    winners:["Matt Perkes","Nat Connor"], losers:["I can confirm Reeves did not come last (miracles can happen)"] },
 ];
 
 const fullMembers = ["Aaron Hickey","Nick Forsyth","Oli Finley","Mitch Corrigan","Matt Perkes","Nick Bateman","James Reeves","Will Dennis","George Davey","Nat Connor","James Wakefield","Mark Williams","Occy Austin","Hayden Bushell"];
@@ -432,20 +536,33 @@ const ledgerList = document.getElementById('ledgerList');
 editions.forEach(e=>{
   const div = document.createElement('div');
   div.className = 'entry';
+  const storyParagraphs = e.fullStory.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
   div.innerHTML = `
     <div class="numeral">${e.num}</div>
     <div class="card">
-      <div class="meta">
-        <span class="loc">${e.loc}</span>
-        <span class="date mono">${e.date}</span>
+      <div class="card-header">
+        <div class="meta">
+          <span class="loc">${e.loc}</span>
+          <span class="date mono">${e.date}</span>
+        </div>
+        <span class="expand-icon">Full Story <span class="chevron">&#9660;</span></span>
       </div>
       <p class="quote">"${e.quote}"</p>
       <p class="blurb">${e.blurb}</p>
+      <div class="full-story">
+        <div class="full-story-inner">
+          ${storyParagraphs}
+          ${e.realWinner ? `<p class="real-winner">Real winner: ${e.realWinner}</p>` : ''}
+        </div>
+      </div>
       <div class="results">
         <div><span class="label">Winners</span>${e.winners.join(' & ')}</div>
         <div><span class="label">Losers</span>${e.losers.join(', ')}</div>
       </div>
     </div>`;
+  div.querySelector('.card').addEventListener('click', ()=>{
+    div.classList.toggle('open');
+  });
   ledgerList.appendChild(div);
 });
 

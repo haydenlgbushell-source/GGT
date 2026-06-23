@@ -83,14 +83,14 @@
   @media (max-width:720px){
     .nav-toggle{ display:block; }
     nav ul{
-      position:fixed; top:60px; left:0; right:0; bottom:0;
+      position:fixed; top:60px; left:0; right:0;
       flex-direction:column; gap:0;
       background:rgba(12,32,24,0.97);
       backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
       border-bottom:1px solid var(--line);
-      max-height:0; overflow:hidden; transition:max-height .3s ease;
+      display:none;
     }
-    nav ul.open{ max-height:100vh; }
+    nav ul.open{ display:flex; }
     nav ul a{ display:block; padding:18px 28px; border-bottom:1px solid var(--line); border-radius:0; font-size:0.9rem; }
   }
 

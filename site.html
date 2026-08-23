@@ -865,7 +865,7 @@
 
   <footer>
     <p class="tagline">"What goes on tour stays on tour — which includes this document."</p>
-    <p class="fine mono">GGT &middot; Est. 2012 &middot; XV Editions Strong</p>
+    <p class="fine mono" id="footerFine">GGT &middot; Est. 2012</p>
   </footer>
 
   <div class="profile-overlay" id="profileOverlay">
@@ -1116,14 +1116,14 @@ Sunday and the weary gents got their breakfast and headed off to the airport sur
 
 const attendance = {
   "Aaron Hickey":     ["I","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
-  "Nick Forsyth":     ["II","III","IV","V","VI","VII","VIII","X","XI","XII","XIV"],
+  "Nick Forsyth":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Oli Finley":       ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Mitch Corrigan":   ["I","II","III","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV"],
   "Matt Perkes":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
-  "Nick Bateman":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"],
+  "Nick Bateman":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "James Reeves":     ["I","II","III","IV","VI","VII","VIII","IX","X","XI","XII","XIII","XIV"],
   "Will Dennis":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
-  "George Davey":     ["IX","X","XI","XII","XIII"],
+  "George Davey":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Nat Connor":       ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "James Wakefield":  ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Jazz Mathers":    ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
@@ -1135,7 +1135,7 @@ const attendance = {
 const fullMembers = Object.keys(attendance);
 const provMembers = [
   { name:"Chris Yarrington", tag:"President of the Provisionals", trips:["VI","X","XI","XII","XIII","XIV","XV"] },
-  { name:"Dave Smith", tag:"Junior VP of Provisionals", trips:["X","XI","XIII"] },
+  { name:"Dave Smith", tag:"Junior VP of Provisionals", trips:["XII","XIII","XIV"] },
   { name:"Marty Howard", tag:"Provisional", trips:["XI","XII","XV"] },
   { name:"Brad Drinkwater", tag:"Provisional", trips:["VII","VIII"] },
   { name:"Sean Patterson", tag:"Provisional", trips:["XI","XII","XV"] },
@@ -1176,6 +1176,10 @@ const memberProfiles = {
   "Iain Stewart":     { nickname:"Skip", handicap:"TBC", homeCourse:"TBC", favClub:"TBC", drink:"TBC", quote:"Two tours in and still keeping his powder dry — the GGT's most mysterious provisional.", photo:"photos/profiles/iain-stewart.jpg" },
   "Ollie Silverton":  { nickname:"Ollie", handicap:"TBC", homeCourse:"TBC", favClub:"TBC", drink:"TBC", quote:"One of the GGT XII night owls who went deep into the wee hours alongside Stackpool — somehow needed no search party of his own.", photo:"" },
 };
+
+// ---------- FOOTER ----------
+document.getElementById('footerFine').innerHTML =
+  `GGT &middot; Est. 2012 &middot; ${editions[editions.length - 1].num} Editions Strong`;
 
 // ---------- RENDER LEDGER ----------
 const ledgerList = document.getElementById('ledgerList');

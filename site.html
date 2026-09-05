@@ -589,6 +589,104 @@
     .profile-tours{ padding:0 20px 18px; }
   }
 
+  /* SUGGEST / CONTRIBUTE */
+  .suggest-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:18px;
+    padding:9px 16px;
+    border:1px dashed var(--line);
+    border-radius:2px;
+    background:transparent;
+    color:var(--brass-bright);
+    font-family:'Public Sans', sans-serif;
+    font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+    cursor:pointer;
+    transition:border-color .25s, background .25s, color .25s;
+  }
+  .suggest-btn:hover{
+    border-color:var(--brass); border-style:solid;
+    background:rgba(201,162,39,0.08); color:var(--cream);
+  }
+  .suggest-overlay{
+    display:none; position:fixed; inset:0; z-index:250;
+    background:rgba(6,20,12,0.88); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center;
+    padding:24px;
+    overflow-y:auto;
+  }
+  .suggest-overlay.active{ display:flex; }
+  .suggest-card{
+    position:relative;
+    background:var(--felt);
+    border:1px solid var(--line);
+    border-radius:4px;
+    max-width:480px; width:100%;
+    margin:auto;
+    padding:30px 28px 26px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.6), 0 0 30px rgba(201,162,39,0.08);
+    animation:profileIn 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .suggest-close{
+    position:absolute; top:12px; right:14px;
+    background:none; border:none; cursor:pointer;
+    font-size:1.3rem; color:var(--brass-bright); opacity:0.6;
+    font-family:serif; transition:opacity .2s;
+  }
+  .suggest-close:hover{ opacity:1; }
+  .suggest-title{
+    font-family:'Fraunces',serif; font-weight:600; font-size:1.3rem; color:var(--cream);
+    margin-bottom:4px;
+  }
+  .suggest-sub{
+    font-size:0.85rem; color:var(--cream-dim); margin-bottom:20px; font-style:italic;
+    font-family:'Fraunces',serif;
+  }
+  .suggest-field{ margin-bottom:16px; }
+  .suggest-field label{
+    display:block; font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--brass-bright); margin-bottom:6px;
+  }
+  .suggest-field input[type="text"],
+  .suggest-field textarea{
+    width:100%; padding:11px 14px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--line);
+    border-radius:2px;
+    color:var(--cream);
+    font-family:'Public Sans', sans-serif;
+    font-size:0.9rem;
+    outline:none;
+    resize:vertical;
+    transition:border-color .25s;
+  }
+  .suggest-field input[type="text"]:focus,
+  .suggest-field textarea:focus{ border-color:var(--brass); }
+  .suggest-field .hint{
+    font-size:0.72rem; color:var(--cream-dim); opacity:0.7; margin-top:6px;
+  }
+  .suggest-field input[type="file"]{
+    width:100%; color:var(--cream-dim); font-size:0.82rem;
+  }
+  .suggest-file-list{
+    margin-top:8px; font-size:0.78rem; color:var(--brass-bright);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .suggest-submit{
+    width:100%; padding:12px 24px; margin-top:6px;
+    border:1px solid var(--brass);
+    border-radius:2px;
+    background:var(--brass);
+    color:var(--felt-dark);
+    font-family:'Public Sans', sans-serif; font-weight:600;
+    font-size:0.8rem; letter-spacing:0.12em; text-transform:uppercase;
+    cursor:pointer;
+    transition:background .25s, transform .2s;
+  }
+  .suggest-submit:hover{ background:var(--brass-bright); transform:translateY(-1px); }
+  @media(max-width:600px){
+    .suggest-card{ padding:24px 18px 20px; }
+  }
+
   /* EDITION PHOTO COLLAGE */
   .edition-photos{
     margin-top:20px; padding-top:20px;
@@ -877,6 +975,31 @@
   <div class="lightbox" id="lightbox">
     <button class="close-lb">&times;</button>
     <img src="" alt="Full size photo" id="lbImg">
+  </div>
+
+  <div class="suggest-overlay" id="suggestOverlay">
+    <div class="suggest-card">
+      <button class="suggest-close" id="suggestClose">&times;</button>
+      <div class="suggest-title">Add to the Story</div>
+      <div class="suggest-sub" id="suggestSub">Suggest a detail or photo for this trip</div>
+      <form id="suggestForm">
+        <div class="suggest-field">
+          <label for="suggestName">Your Name</label>
+          <input type="text" id="suggestName" autocomplete="off" required>
+        </div>
+        <div class="suggest-field">
+          <label for="suggestStory">Story / info to add</label>
+          <textarea id="suggestStory" rows="5" placeholder="A moment, quote, result or detail we missed..."></textarea>
+        </div>
+        <div class="suggest-field">
+          <label for="suggestPhotos">Photos</label>
+          <input type="file" id="suggestPhotos" accept="image/*" multiple>
+          <div class="suggest-file-list" id="suggestFileList"></div>
+          <div class="hint">Photos can't upload from here — after you hit submit, an email opens. Attach the photos to it before sending and they'll be added to the tour history.</div>
+        </div>
+        <button type="submit" class="suggest-submit">Submit Suggestion</button>
+      </form>
+    </div>
   </div>
 
   <button class="back-to-top" id="backToTop" title="Back to top">&#9650;</button>
@@ -1225,10 +1348,11 @@ editions.forEach(e=>{
         <div><span class="label">Winners</span>${e.winners.join(' & ')}</div>
         <div><span class="label">Losers</span>${e.losers.join(', ')}</div>
       </div>
+      <button type="button" class="suggest-btn" data-num="${e.num}" data-loc="${e.loc}" data-date="${e.date}">&#9998; Suggest a photo or story</button>
     </div>`;
   if(hasStory || e.photos){
     div.querySelector('.card').addEventListener('click', (ev)=>{
-      if(ev.target.closest('.photo')) return;
+      if(ev.target.closest('.photo') || ev.target.closest('.suggest-btn')) return;
       div.classList.toggle('open');
     });
   }
@@ -1374,6 +1498,69 @@ document.querySelectorAll('.photo-collage .photo').forEach(p => {
 });
 lightbox.addEventListener('click', () => {
   lightbox.classList.remove('active');
+});
+
+// ---------- SUGGEST A PHOTO OR STORY ----------
+const SUGGEST_EMAIL = 'haydenlgbushell@gmail.com';
+const suggestOverlay = document.getElementById('suggestOverlay');
+const suggestSub = document.getElementById('suggestSub');
+const suggestForm = document.getElementById('suggestForm');
+const suggestName = document.getElementById('suggestName');
+const suggestStory = document.getElementById('suggestStory');
+const suggestPhotos = document.getElementById('suggestPhotos');
+const suggestFileList = document.getElementById('suggestFileList');
+let suggestTrip = null;
+
+function openSuggestModal(num, loc, date){
+  suggestTrip = { num, loc, date };
+  suggestSub.textContent = `GGT ${num} — ${loc} (${date})`;
+  suggestForm.reset();
+  suggestFileList.textContent = '';
+  suggestOverlay.classList.add('active');
+  setTimeout(()=> suggestName.focus(), 200);
+}
+function closeSuggestModal(){
+  suggestOverlay.classList.remove('active');
+}
+
+document.querySelectorAll('.suggest-btn').forEach(btn=>{
+  btn.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    openSuggestModal(btn.dataset.num, btn.dataset.loc, btn.dataset.date);
+  });
+});
+
+document.getElementById('suggestClose').addEventListener('click', closeSuggestModal);
+suggestOverlay.addEventListener('click', (ev)=>{
+  if(ev.target === suggestOverlay) closeSuggestModal();
+});
+
+suggestPhotos.addEventListener('change', ()=>{
+  const files = Array.from(suggestPhotos.files).map(f=>f.name);
+  suggestFileList.textContent = files.length ? `Selected: ${files.join(', ')}` : '';
+});
+
+suggestForm.addEventListener('submit', (ev)=>{
+  ev.preventDefault();
+  if(!suggestTrip) return;
+  const name = suggestName.value.trim();
+  const story = suggestStory.value.trim();
+  const fileNames = Array.from(suggestPhotos.files).map(f=>f.name);
+  const subject = `GGT History Suggestion — Tour ${suggestTrip.num} (${suggestTrip.loc})`;
+  const bodyLines = [
+    `Tour: ${suggestTrip.num} — ${suggestTrip.loc} (${suggestTrip.date})`,
+    `From: ${name}`,
+    '',
+    story || '(no story text added)',
+    ''
+  ];
+  if(fileNames.length){
+    bodyLines.push(`Photos to attach (${fileNames.length}): ${fileNames.join(', ')}`);
+    bodyLines.push('(Please attach these photos to this email before sending!)');
+  }
+  const mailto = `mailto:${SUGGEST_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+  window.location.href = mailto;
+  closeSuggestModal();
 });
 
 // ---------- BACK TO TOP ----------

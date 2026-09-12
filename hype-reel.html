@@ -61,6 +61,7 @@
     position:relative; z-index:1;
     min-height:70svh;
     width:100%;
+    overflow:hidden;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     padding:64px 28px;
     scroll-snap-align:start;
@@ -221,7 +222,7 @@
     opacity:0; pointer-events:none;
   }
   .p-card.enter{ opacity:1; pointer-events:auto; animation:pCardIn 0.55s cubic-bezier(.2,.8,.2,1) forwards; }
-  .p-card.leave{ opacity:1; animation:pCardOut 0.35s ease forwards; }
+  .p-card.leave{ opacity:1; animation:pCardOut 0.18s ease forwards; }
   @keyframes pCardIn{ from{ opacity:0; transform:scale(0.82) translateY(18px); } to{ opacity:1; transform:scale(1) translateY(0); } }
   @keyframes pCardOut{ from{ opacity:1; transform:scale(1); } to{ opacity:0; transform:scale(1.06); } }
   .p-number{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; letter-spacing:0.2em; color:var(--brass); }
@@ -685,7 +686,7 @@
       setTimeout(function(){
         if (prev.parentNode) prev.parentNode.removeChild(prev);
         insertCard();
-      }, 350);
+      }, 180);
     } else {
       insertCard();
     }

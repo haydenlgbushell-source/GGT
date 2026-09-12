@@ -378,6 +378,17 @@
 </head>
 <body>
 
+<script>
+// ---------- AUTH GATE ----------
+(function(){
+  var k = [66,117,99,107,87,105,108,108,70,117,99,107];
+  var s = sessionStorage.getItem('ggt-auth');
+  if(s !== String.fromCharCode.apply(null,k)){
+    window.location.href = 'index.html?next=hype-reel.html';
+  }
+})();
+</script>
+
 <a class="back-link" href="site.html">&larr; GGT Site</a>
 
 <!-- ============ SCENE 0 : SITE-BRAND OPEN ============ -->

@@ -342,24 +342,6 @@
   @keyframes btnGlow{ 0%,100%{ box-shadow:0 0 0 rgba(230,197,88,0); } 50%{ box-shadow:0 0 22px rgba(230,197,88,0.55); } }
   .scene.revealed #replayBtn{ animation:btnGlow 2.2s ease-in-out infinite; }
 
-  /* ---- transport bar ---- */
-  .transport{
-    position:fixed; left:0; right:0; bottom:0; z-index:60;
-    display:flex; align-items:center; justify-content:center; gap:14px;
-    padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-    background:linear-gradient(0deg, rgba(12,32,24,0.95), rgba(12,32,24,0.7));
-    border-top:1px solid var(--line);
-  }
-  .tbtn{
-    width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:rgba(31,74,54,0.5);
-    color:var(--cream); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
-  }
-  .tbtn:hover{ border-color:var(--brass); color:var(--brass-bright); }
-  .tbtn.play{ width:50px; height:50px; background:var(--brass); color:var(--felt-dark); border-color:var(--brass); }
-  .tbtn.play:hover{ background:var(--brass-bright); }
-  .dots{ display:flex; gap:6px; }
-  .dot{ width:6px; height:6px; border-radius:50%; background:rgba(241,233,210,0.25); transition:background .2s, transform .2s; }
-  .dot.active{ background:var(--brass-bright); transform:scale(1.4); }
 
   @media (max-width:520px){
     .scene{ padding:80px 18px 130px; }
@@ -569,13 +551,6 @@
   </div>
 </section>
 
-<!-- ============ TRANSPORT BAR ============ -->
-<div class="transport">
-  <button class="tbtn" id="prevBtn" aria-label="Previous scene">&#8592;</button>
-  <button class="tbtn play" id="musicBtn" aria-label="Play music">&#9658;</button>
-  <button class="tbtn" id="nextBtn" aria-label="Next scene">&#8594;</button>
-  <div class="dots" id="dots"></div>
-</div>
 
 <script>
 (function(){
@@ -745,20 +720,13 @@
 
   // ---------- scene nav + reveal-on-scroll ----------
   var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
-  var dotsWrap = document.getElementById('dots');
-  scenes.forEach(function(_, i){
-    var d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    dotsWrap.appendChild(d);
-  });
-  var dotEls = Array.prototype.slice.call(dotsWrap.children);
   var current = 0;
 
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if (e.isIntersecting){
         var idx = scenes.indexOf(e.target);
-        if (idx > -1 && idx !== current){ current = idx; updateDots(); scheduleAdvance(); }
+        if (idx > -1 && idx !== current){ current = idx; scheduleAdvance(); }
       }
     });
   }, {threshold:0.6});
@@ -774,15 +742,10 @@
   }, {threshold:0, rootMargin:'0px 0px -20% 0px'});
   scenes.forEach(function(s){ revealIO.observe(s); });
 
-  function updateDots(){
-    dotEls.forEach(function(d, i){ d.classList.toggle('active', i === current); });
-  }
   function goTo(i){
     i = Math.max(0, Math.min(scenes.length - 1, i));
     scenes[i].scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth'});
   }
-  document.getElementById('prevBtn').addEventListener('click', function(){ goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', function(){ goTo(current + 1); });
   document.getElementById('replayBtn').addEventListener('click', function(){ goTo(0); });
   document.getElementById('heroCta').addEventListener('click', function(){ goTo(1); });
 
@@ -804,13 +767,6 @@
     autoplayOn = true;
     scheduleAdvance();
   }
-  function stopAutoplay(){
-    autoplayOn = false;
-    clearTimeout(advanceTimer); advanceTimer = null;
-  }
-  scenes.forEach(function(s){
-    s.addEventListener('click', stopAutoplay);
-  });
 
   // ---------- synthesized tournament-broadcast fanfare (Web Audio, no external files) ----------
   // A driving stadium-rock/brass-fanfare score in D major, closer to a
@@ -910,25 +866,21 @@
     }
   }
 
-  var musicBtn = document.getElementById('musicBtn');
-  musicBtn.addEventListener('click', function(){
-    ensureCtx();
+  // Autoplay: browsers only allow audio to start once the visitor has
+  // interacted with the page, so the score is fully scheduled from the
+  // first paint and simply unmutes itself on the first click/tap/key.
+  ensureCtx();
+  playing = true;
+  nextNoteTime = ctx.currentTime + 0.05;
+  step = 0;
+  schedulerId = setInterval(scheduleStep, 25);
+  startAutoplay();
+
+  function unlockAudio(){
     if (ctx.state === 'suspended') ctx.resume();
-    if (!playing){
-      playing = true;
-      musicBtn.innerHTML = '&#10074;&#10074;';
-      musicBtn.setAttribute('aria-label', 'Pause music');
-      nextNoteTime = ctx.currentTime + 0.05;
-      step = 0;
-      schedulerId = setInterval(scheduleStep, 25);
-      startAutoplay();
-    } else {
-      playing = false;
-      musicBtn.innerHTML = '&#9658;';
-      musicBtn.setAttribute('aria-label', 'Play music');
-      clearInterval(schedulerId);
-      stopAutoplay();
-    }
+  }
+  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function(evt){
+    window.addEventListener(evt, unlockAudio, {passive:true});
   });
 })();
 </script>

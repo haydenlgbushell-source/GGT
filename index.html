@@ -433,7 +433,7 @@
     return p.get('next') || 'site.html';
   }
 
-  if (sessionStorage.getItem('ggt-auth')) {
+  if (localStorage.getItem('ggt-auth')) {
     window.location.href = nextDest();
     return;
   }
@@ -450,7 +450,7 @@
     var inp = document.getElementById('pwInput');
     var err = document.getElementById('pwError');
     if(check(inp.value)){
-      sessionStorage.setItem('ggt-auth', inp.value);
+      localStorage.setItem('ggt-auth', inp.value);
       window.location.href = nextDest();
     } else {
       inp.classList.add('error');

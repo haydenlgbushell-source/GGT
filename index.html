@@ -428,6 +428,16 @@
   var k = [66,117,99,107,87,105,108,108,70,117,99,107];
   function check(v){ return v === String.fromCharCode.apply(null,k); }
 
+  function nextDest(){
+    var p = new URLSearchParams(window.location.search);
+    return p.get('next') || 'site.html';
+  }
+
+  if (sessionStorage.getItem('ggt-auth')) {
+    window.location.href = nextDest();
+    return;
+  }
+
   function openGate(e){
     e.preventDefault();
     var ov = document.getElementById('pwOverlay');
@@ -441,7 +451,7 @@
     var err = document.getElementById('pwError');
     if(check(inp.value)){
       sessionStorage.setItem('ggt-auth', inp.value);
-      window.location.href = 'site.html';
+      window.location.href = nextDest();
     } else {
       inp.classList.add('error');
       err.classList.add('show');

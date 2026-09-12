@@ -812,67 +812,99 @@
     s.addEventListener('click', stopAutoplay);
   });
 
-  // ---------- synthesized 128bpm hype beat (Web Audio, no external files) ----------
+  // ---------- synthesized tournament-broadcast fanfare (Web Audio, no external files) ----------
+  // A driving stadium-rock/brass-fanfare score in D major, closer to a
+  // golf-tournament highlight reel than a club beat: kick+snare backbeat,
+  // a distorted power-chord riff, and horn-stab hits on the phrase turns.
   var ctx = null, playing = false, schedulerId = null;
-  var bpm = 128, beatDur = 60 / bpm, nextNoteTime = 0, step = 0;
-  var bassNotes = [55, 55, 61.74, 55, 58.27, 58.27, 61.74, 49]; // A1-ish driving line
+  var bpm = 116, beatDur = 60 / bpm, nextNoteTime = 0, step = 0;
+  // D - A - Bm - G, a classic anthemic I-V-vi-IV progression (root Hz, one per bar)
+  var riffRoots = [146.83, 110.00, 123.47, 98.00];
+  var fanfareTriad = [293.66, 369.99, 440.00]; // D major triad, one octave up
 
   function ensureCtx(){
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
     return ctx;
   }
 
+  function distortionCurve(amount){
+    var n = 44100, curve = new Float32Array(n), deg = Math.PI / 180;
+    for (var i = 0; i < n; i++){
+      var x = i * 2 / n - 1;
+      curve[i] = (3 + amount) * x * 20 * deg / (Math.PI + amount * Math.abs(x));
+    }
+    return curve;
+  }
+  var driveCurve = distortionCurve(28);
+
   function kick(t){
     var o = ctx.createOscillator(), g = ctx.createGain();
     o.type = 'sine';
-    o.frequency.setValueAtTime(150, t);
-    o.frequency.exponentialRampToValueAtTime(45, t + 0.13);
+    o.frequency.setValueAtTime(140, t);
+    o.frequency.exponentialRampToValueAtTime(48, t + 0.13);
     g.gain.setValueAtTime(1, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
     o.connect(g); g.connect(ctx.destination);
     o.start(t); o.stop(t + 0.25);
   }
-  function hat(t, open){
-    var bufSize = ctx.sampleRate * 0.05;
+  function snare(t){
+    var bufSize = ctx.sampleRate * 0.16;
     var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
     var d = buf.getChannelData(0);
-    for (var i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
+    for (var i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
     var src = ctx.createBufferSource(); src.buffer = buf;
-    var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000;
+    var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.9;
     var g = ctx.createGain();
-    g.gain.setValueAtTime(open ? 0.18 : 0.1, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + (open ? 0.18 : 0.05));
-    src.connect(hp); hp.connect(g); g.connect(ctx.destination);
-    src.start(t); src.stop(t + 0.2);
+    g.gain.setValueAtTime(0.32, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination);
+    src.start(t); src.stop(t + 0.16);
+
+    var o = ctx.createOscillator(), og = ctx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(190, t);
+    o.frequency.exponentialRampToValueAtTime(110, t + 0.1);
+    og.gain.setValueAtTime(0.22, t);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    o.connect(og); og.connect(ctx.destination);
+    o.start(t); o.stop(t + 0.13);
   }
-  function bass(t, freq){
-    var o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-    o.type = 'sawtooth'; o.frequency.value = freq;
-    f.type = 'lowpass'; f.frequency.value = 900;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(0.22, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + beatDur * 0.9);
-    o.connect(f); f.connect(g); g.connect(ctx.destination);
-    o.start(t); o.stop(t + beatDur);
-  }
-  function stab(t){
-    [1, 1.25, 1.5].forEach(function(mult){
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'square'; o.frequency.value = 220 * mult;
-      g.gain.setValueAtTime(0.05, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(t); o.stop(t + 0.16);
+  function powerChord(t, freq){
+    [freq, freq * 1.5].forEach(function(f){
+      var o = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter(), shaper = ctx.createWaveShaper();
+      o.type = 'sawtooth'; o.frequency.value = f;
+      shaper.curve = driveCurve; shaper.oversample = '2x';
+      lp.type = 'lowpass'; lp.frequency.value = 1500;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.15, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + beatDur * 0.9);
+      o.connect(shaper); shaper.connect(lp); lp.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + beatDur);
     });
   }
+  function hornHit(t, gainScale){
+    fanfareTriad.forEach(function(f){
+      var o = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+      o.type = 'sawtooth'; o.frequency.value = f;
+      lp.type = 'lowpass'; lp.frequency.value = 2400;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.11 * gainScale, t + 0.025);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      o.connect(lp); lp.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + 0.58);
+    });
+  }
+  function stab(t){ hornHit(t, 0.5); }
 
   function scheduleStep(){
     var sixteenth = beatDur / 4;
     while (nextNoteTime < ctx.currentTime + 0.1){
       var beatInBar = step % 16;
-      if (beatInBar % 4 === 0) kick(nextNoteTime);
-      if (beatInBar % 2 === 1) hat(nextNoteTime, beatInBar % 4 === 3);
-      if (beatInBar % 4 === 0) bass(nextNoteTime, bassNotes[(step / 4 | 0) % bassNotes.length]);
+      var bar = step / 16 | 0;
+      if (beatInBar === 0 || beatInBar === 8) kick(nextNoteTime);
+      if (beatInBar === 4 || beatInBar === 12) snare(nextNoteTime);
+      if (beatInBar === 0) powerChord(nextNoteTime, riffRoots[bar % riffRoots.length]);
+      if (beatInBar === 0 && bar % 2 === 0) hornHit(nextNoteTime, 1);
       nextNoteTime += sixteenth;
       step++;
     }

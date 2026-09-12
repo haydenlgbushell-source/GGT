@@ -758,7 +758,7 @@
     entries.forEach(function(e){
       if (e.isIntersecting){
         var idx = scenes.indexOf(e.target);
-        if (idx > -1){ current = idx; updateDots(); }
+        if (idx > -1 && idx !== current){ current = idx; updateDots(); scheduleAdvance(); }
       }
     });
   }, {threshold:0.6});
@@ -786,15 +786,27 @@
   document.getElementById('replayBtn').addEventListener('click', function(){ goTo(0); });
   document.getElementById('heroCta').addEventListener('click', function(){ goTo(1); });
 
-  var autoTimer = null;
-  function startAutoplay(){
-    if (reduceMotion || autoTimer) return;
-    autoTimer = setInterval(function(){
+  var fieldSceneIdx = scenes.indexOf(document.getElementById('s2'));
+  var autoplayOn = false, advanceTimer = null;
+  function sceneDwell(idx){
+    if (idx === fieldSceneIdx) return roster.length * 1700 + 500;
+    return 6000;
+  }
+  function scheduleAdvance(){
+    clearTimeout(advanceTimer);
+    if (!autoplayOn) return;
+    advanceTimer = setTimeout(function(){
       goTo(current + 1 >= scenes.length ? 0 : current + 1);
-    }, 6000);
+    }, sceneDwell(current));
+  }
+  function startAutoplay(){
+    if (reduceMotion || autoplayOn) return;
+    autoplayOn = true;
+    scheduleAdvance();
   }
   function stopAutoplay(){
-    clearInterval(autoTimer); autoTimer = null;
+    autoplayOn = false;
+    clearTimeout(advanceTimer); advanceTimer = null;
   }
   scenes.forEach(function(s){
     s.addEventListener('click', stopAutoplay);

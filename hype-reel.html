@@ -867,21 +867,26 @@
     }
   }
 
-  // Autoplay: browsers only allow audio to start once the visitor has
-  // interacted with the page, so the score is fully scheduled from the
-  // first paint and simply unmutes itself on the first click/tap/key.
-  ensureCtx();
-  playing = true;
-  nextNoteTime = ctx.currentTime + 0.05;
-  step = 0;
-  schedulerId = setInterval(scheduleStep, 25);
+  // Scene auto-advance starts immediately — it isn't subject to autoplay
+  // restrictions. Audio is different: Safari (desktop and iOS) only grants
+  // sound if the AudioContext is both created AND resumed synchronously
+  // inside a trusted user-gesture handler, so it can't be pre-created at
+  // load like Chrome/Firefox tolerate — it has to happen on first touch.
   startAutoplay();
 
-  function unlockAudio(){
+  var audioStarted = false;
+  function startMusic(){
+    if (audioStarted) return;
+    audioStarted = true;
+    ensureCtx();
     if (ctx.state === 'suspended') ctx.resume();
+    playing = true;
+    nextNoteTime = ctx.currentTime + 0.05;
+    step = 0;
+    schedulerId = setInterval(scheduleStep, 25);
   }
-  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function(evt){
-    window.addEventListener(evt, unlockAudio, {passive:true});
+  ['pointerdown', 'keydown', 'touchend', 'click'].forEach(function(evt){
+    window.addEventListener(evt, startMusic, {passive:true});
   });
 })();
 </script>

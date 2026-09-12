@@ -59,10 +59,10 @@
   /* ---- scene shell ---- */
   .scene{
     position:relative; z-index:1;
-    min-height:100svh;
+    min-height:70svh;
     width:100%;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:96px 28px 120px;
+    padding:64px 28px;
     scroll-snap-align:start;
     text-align:center;
     gap:28px;
@@ -344,7 +344,7 @@
 
 
   @media (max-width:520px){
-    .scene{ padding:80px 18px 130px; }
+    .scene{ padding:48px 18px; }
     .roundel{ width:74px; height:74px; }
     .p-roundel{ width:130px; height:130px; }
   }
@@ -374,7 +374,7 @@
 <a class="back-link" href="site.html">&larr; GGT Site</a>
 
 <!-- ============ SCENE 0 : SITE-BRAND OPEN ============ -->
-<section class="scene" id="s0" style="padding:0;">
+<section class="scene" id="s0" style="padding:0; min-height:100svh;">
   <div class="intro-scene">
     <div class="intro-texture"></div>
     <div class="intro-vignette"></div>
@@ -663,13 +663,20 @@
   var playerIdx = 0, playerTimer = null, stageActive = false;
   function showPlayer(idx){
     var prev = stage.querySelector('.p-card.enter');
+    function insertCard(){
+      var card = buildPlayerCard(roster[idx], idx);
+      stage.appendChild(card);
+      requestAnimationFrame(function(){ card.classList.add('enter'); });
+    }
     if (prev){
       prev.classList.remove('enter'); prev.classList.add('leave');
-      setTimeout(function(){ if (prev.parentNode) prev.parentNode.removeChild(prev); }, 380);
+      setTimeout(function(){
+        if (prev.parentNode) prev.parentNode.removeChild(prev);
+        insertCard();
+      }, 350);
+    } else {
+      insertCard();
     }
-    var card = buildPlayerCard(roster[idx], idx);
-    stage.appendChild(card);
-    requestAnimationFrame(function(){ card.classList.add('enter'); });
     tickEls.forEach(function(t, i){
       t.classList.toggle('now', i === idx);
       t.classList.toggle('done', i < idx);
@@ -867,21 +874,26 @@
     }
   }
 
-  // Autoplay: browsers only allow audio to start once the visitor has
-  // interacted with the page, so the score is fully scheduled from the
-  // first paint and simply unmutes itself on the first click/tap/key.
-  ensureCtx();
-  playing = true;
-  nextNoteTime = ctx.currentTime + 0.05;
-  step = 0;
-  schedulerId = setInterval(scheduleStep, 25);
+  // Scene auto-advance starts immediately — it isn't subject to autoplay
+  // restrictions. Audio is different: Safari (desktop and iOS) only grants
+  // sound if the AudioContext is both created AND resumed synchronously
+  // inside a trusted user-gesture handler, so it can't be pre-created at
+  // load like Chrome/Firefox tolerate — it has to happen on first touch.
   startAutoplay();
 
-  function unlockAudio(){
+  var audioStarted = false;
+  function startMusic(){
+    if (audioStarted) return;
+    audioStarted = true;
+    ensureCtx();
     if (ctx.state === 'suspended') ctx.resume();
+    playing = true;
+    nextNoteTime = ctx.currentTime + 0.05;
+    step = 0;
+    schedulerId = setInterval(scheduleStep, 25);
   }
-  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function(evt){
-    window.addEventListener(evt, unlockAudio, {passive:true});
+  ['pointerdown', 'keydown', 'touchend', 'click'].forEach(function(evt){
+    window.addEventListener(evt, startMusic, {passive:true});
   });
 })();
 </script>

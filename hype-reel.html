@@ -356,6 +356,17 @@
     transition:color .2s, border-color .2s;
   }
   .back-link:hover{ color:var(--brass-bright); border-color:var(--brass); }
+  @keyframes soundHintPulse{ 0%,100%{ box-shadow:0 0 0 rgba(230,197,88,0); } 50%{ box-shadow:0 0 16px rgba(230,197,88,0.5); } }
+  .sound-hint{
+    position:fixed; top:16px; right:16px; z-index:70;
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--felt-dark); background:var(--brass); border:1px solid var(--brass);
+    padding:8px 14px; border-radius:2px; cursor:pointer;
+    animation:soundHintPulse 2s ease-in-out infinite;
+    transition:opacity .3s ease, background .2s, transform .2s;
+  }
+  .sound-hint:hover{ background:var(--brass-bright); transform:translateY(-1px); }
+  .sound-hint.hidden{ opacity:0; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -364,7 +375,7 @@
 // ---------- AUTH GATE ----------
 (function(){
   var k = [66,117,99,107,87,105,108,108,70,117,99,107];
-  var s = sessionStorage.getItem('ggt-auth');
+  var s = localStorage.getItem('ggt-auth');
   if(s !== String.fromCharCode.apply(null,k)){
     window.location.href = 'index.html?next=hype-reel.html';
   }
@@ -372,6 +383,7 @@
 </script>
 
 <a class="back-link" href="site.html">&larr; GGT Site</a>
+<button class="sound-hint" id="soundHint" aria-label="Enable sound">&#128266; Tap for sound</button>
 
 <!-- ============ SCENE 0 : SITE-BRAND OPEN ============ -->
 <section class="scene" id="s0" style="padding:0; min-height:100svh;">
@@ -881,10 +893,19 @@
   // load like Chrome/Firefox tolerate — it has to happen on first touch.
   startAutoplay();
 
+  // Chrome/Safari/Firefox only unlock audio on a small, specific set of
+  // "activation" events — scrolling (wheel) does NOT qualify, confirmed
+  // against a real Chromium instance (it logs "AudioContext was not
+  // allowed to start" and stays suspended on wheel-only interaction).
+  // Since this reel plays entirely by scrolling, most visitors never
+  // trigger a qualifying gesture at all, so a visible one-tap "Tap for
+  // sound" affordance is the honest fix, not another silent listener.
+  var soundHint = document.getElementById('soundHint');
   var audioStarted = false;
   function startMusic(){
     if (audioStarted) return;
     audioStarted = true;
+    soundHint.classList.add('hidden');
     ensureCtx();
     if (ctx.state === 'suspended') ctx.resume();
     // iOS/desktop Safari can report the context as "running" yet stay
@@ -901,7 +922,8 @@
     step = 0;
     schedulerId = setInterval(scheduleStep, 25);
   }
-  ['pointerdown', 'mousedown', 'keydown', 'touchstart', 'touchend', 'click'].forEach(function(evt){
+  soundHint.addEventListener('click', startMusic);
+  ['click', 'mouseup', 'pointerup', 'touchend', 'keydown'].forEach(function(evt){
     window.addEventListener(evt, startMusic, {passive:true});
   });
 })();

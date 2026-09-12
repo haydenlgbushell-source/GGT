@@ -170,7 +170,30 @@
   .plaque-field{ }
   .plaque-field .k{ font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--brass-bright); margin-bottom:6px;}
   .plaque-field .v{ font-family:'Fraunces',serif; font-size:1.3rem; color:var(--cream-dim);}
+  .plaque-field .v a{ color:inherit; text-decoration:none; border-bottom:1px solid var(--line); transition:border-color 0.2s, color 0.2s; }
+  .plaque-field .v a:hover{ color:var(--brass-bright); border-color:var(--brass-bright); }
   .tbc{ color:var(--cream-dim); font-style:italic; opacity:0.6;}
+
+  /* VENUE CARDS */
+  .venue-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media(max-width:820px){ .venue-cards{ grid-template-columns:1fr; } }
+  .venue-card{
+    display:block; text-decoration:none; border:1px solid var(--line); border-radius:2px;
+    background:rgba(12,32,24,0.35); overflow:hidden; transition:transform 0.2s, border-color 0.2s;
+  }
+  .venue-card:hover{ transform:translateY(-3px); border-color:var(--brass-bright); }
+  .venue-card .venue-art{
+    height:120px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, var(--felt-light), var(--felt-dark));
+    border-bottom:1px solid var(--line);
+  }
+  .venue-card .venue-art svg{ width:52px; height:52px; }
+  .venue-card .venue-art img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .venue-card .venue-body{ padding:16px 18px; }
+  .venue-card .venue-tag{ font-size:0.66rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--brass-bright); margin-bottom:6px; }
+  .venue-card .venue-name{ font-family:'Fraunces',serif; font-size:1.15rem; color:var(--cream); margin-bottom:4px; }
+  .venue-card .venue-link{ font-size:0.78rem; color:var(--cream-dim); }
+  .venue-card .venue-link::after{ content:" \2192"; }
 
   /* LEDGER / TIMELINE */
   .ledger{ position:relative; }
@@ -779,8 +802,44 @@
       <div class="plaque-grid">
         <div class="plaque-field"><div class="k">Location</div><div class="v">Mornington Peninsula, VIC</div></div>
         <div class="plaque-field"><div class="k">Dates</div><div class="v">9 – 11 October 2026</div></div>
-        <div class="plaque-field"><div class="k">Courses</div><div class="v">Moonah Links &amp; The Dunes</div></div>
-        <div class="plaque-field"><div class="k">Accommodation</div><div class="v">Portsea Village Resort</div></div>
+        <div class="plaque-field"><div class="k">Courses</div><div class="v"><a href="https://www.moonahlinks.com.au/" target="_blank" rel="noopener">Moonah Links</a> &amp; <a href="https://thedunes.com.au/" target="_blank" rel="noopener">The Dunes</a></div></div>
+        <div class="plaque-field"><div class="k">Accommodation</div><div class="v"><a href="https://www.portsea-apartments.com.au/" target="_blank" rel="noopener">Portsea Village Resort</a></div></div>
+      </div>
+
+      <div style="margin-top:30px; padding-top:24px; border-top:1px dashed rgba(201,162,39,0.3);">
+        <div class="eyebrow" style="margin-bottom:16px;">The Venues</div>
+        <div class="venue-cards">
+          <a class="venue-card" href="https://www.moonahlinks.com.au/" target="_blank" rel="noopener">
+            <div class="venue-art">
+              <img src="photos/venues/moonah-links.jpg" alt="Moonah Links clubhouse and 18th green">
+            </div>
+            <div class="venue-body">
+              <div class="venue-tag">Day 1 · Golf</div>
+              <div class="venue-name">Moonah Links</div>
+              <div class="venue-link">moonahlinks.com.au</div>
+            </div>
+          </a>
+          <a class="venue-card" href="https://thedunes.com.au/" target="_blank" rel="noopener">
+            <div class="venue-art">
+              <img src="photos/venues/the-dunes.jpg" alt="The Dunes Golf Links aerial view at sunset">
+            </div>
+            <div class="venue-body">
+              <div class="venue-tag">Day 2 · Golf</div>
+              <div class="venue-name">The Dunes Golf Links</div>
+              <div class="venue-link">thedunes.com.au</div>
+            </div>
+          </a>
+          <a class="venue-card" href="https://www.portsea-apartments.com.au/" target="_blank" rel="noopener">
+            <div class="venue-art">
+              <img src="photos/venues/portsea-village-resort.jpg" alt="Portsea Village Resort pool and apartments">
+            </div>
+            <div class="venue-body">
+              <div class="venue-tag">Accommodation</div>
+              <div class="venue-name">Portsea Village Resort</div>
+              <div class="venue-link">portsea-apartments.com.au</div>
+            </div>
+          </a>
+        </div>
       </div>
 
       <div style="margin-top:30px; padding-top:24px; border-top:1px dashed rgba(201,162,39,0.3);">
@@ -799,15 +858,15 @@
           <div style="color:var(--cream-dim); font-size:0.88rem; line-height:1.8;">
             Arrive at Melbourne Airport<br>
             Private transfer to the Mornington Peninsula<br>
-            Golf at Moonah Links<br>
-            After golf, transfer to the Portsea Village Resort
+            Golf at <a href="https://www.moonahlinks.com.au/" target="_blank" rel="noopener" style="color:inherit;">Moonah Links</a><br>
+            After golf, transfer to the <a href="https://www.portsea-apartments.com.au/" target="_blank" rel="noopener" style="color:inherit;">Portsea Village Resort</a>
           </div>
         </div>
 
         <div style="margin-bottom:20px;">
           <div style="font-family:'Fraunces',serif; font-size:1.05rem; color:var(--brass-bright); margin-bottom:8px;">Day 2 — Saturday 10 October</div>
           <div style="color:var(--cream-dim); font-size:0.88rem; line-height:1.8;">
-            Return transfers for golf at The Dunes Links<br>
+            Return transfers for golf at <a href="https://thedunes.com.au/" target="_blank" rel="noopener" style="color:inherit;">The Dunes Links</a><br>
             Saturday evening festivities TBC
           </div>
         </div>

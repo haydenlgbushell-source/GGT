@@ -887,12 +887,21 @@
     audioStarted = true;
     ensureCtx();
     if (ctx.state === 'suspended') ctx.resume();
+    // iOS/desktop Safari can report the context as "running" yet stay
+    // silent unless a sound-producing node is started synchronously
+    // within the gesture itself — play an inaudible primer buffer to
+    // fully unlock output before scheduling the real score.
+    var primerBuf = ctx.createBuffer(1, 1, 22050);
+    var primer = ctx.createBufferSource();
+    primer.buffer = primerBuf;
+    primer.connect(ctx.destination);
+    primer.start(0);
     playing = true;
     nextNoteTime = ctx.currentTime + 0.05;
     step = 0;
     schedulerId = setInterval(scheduleStep, 25);
   }
-  ['pointerdown', 'keydown', 'touchend', 'click'].forEach(function(evt){
+  ['pointerdown', 'mousedown', 'keydown', 'touchstart', 'touchend', 'click'].forEach(function(evt){
     window.addEventListener(evt, startMusic, {passive:true});
   });
 })();

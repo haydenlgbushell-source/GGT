@@ -663,13 +663,20 @@
   var playerIdx = 0, playerTimer = null, stageActive = false;
   function showPlayer(idx){
     var prev = stage.querySelector('.p-card.enter');
+    function insertCard(){
+      var card = buildPlayerCard(roster[idx], idx);
+      stage.appendChild(card);
+      requestAnimationFrame(function(){ card.classList.add('enter'); });
+    }
     if (prev){
       prev.classList.remove('enter'); prev.classList.add('leave');
-      setTimeout(function(){ if (prev.parentNode) prev.parentNode.removeChild(prev); }, 380);
+      setTimeout(function(){
+        if (prev.parentNode) prev.parentNode.removeChild(prev);
+        insertCard();
+      }, 350);
+    } else {
+      insertCard();
     }
-    var card = buildPlayerCard(roster[idx], idx);
-    stage.appendChild(card);
-    requestAnimationFrame(function(){ card.classList.add('enter'); });
     tickEls.forEach(function(t, i){
       t.classList.toggle('now', i === idx);
       t.classList.toggle('done', i < idx);

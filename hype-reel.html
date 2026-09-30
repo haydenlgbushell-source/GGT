@@ -712,19 +712,28 @@
 
   var TEAM_MS = 3400;
   var playerIdx = 0, playerTimer = null, stageActive = false;
+  // Only ever one live card. Anything else in the stage (a card still fading out,
+  // or cards queued while the tab was in the background) is cleared on each change,
+  // so cards can never stack on top of each other.
+  var currentCard = null, swapTimer = null;
   function showPlayer(idx){
-    var prev = stage.querySelector('.p-card.enter');
+    clearTimeout(swapTimer);
+    Array.prototype.slice.call(stage.children).forEach(function(c){
+      if (c !== currentCard) stage.removeChild(c);
+    });
+    var prev = currentCard;
+    currentCard = null;
     function insertCard(){
+      if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
       var card = buildPlayerCard(teams[idx], idx);
       stage.appendChild(card);
-      requestAnimationFrame(function(){ card.classList.add('enter'); });
+      currentCard = card;
+      void card.offsetWidth; // commit the hidden state so the fade-in still plays
+      card.classList.add('enter');
     }
-    if (prev){
+    if (prev && !document.hidden){
       prev.classList.remove('enter'); prev.classList.add('leave');
-      setTimeout(function(){
-        if (prev.parentNode) prev.parentNode.removeChild(prev);
-        insertCard();
-      }, 500);
+      swapTimer = setTimeout(insertCard, 500);
     } else {
       insertCard();
     }
@@ -749,6 +758,12 @@
     stageActive = false;
     clearInterval(playerTimer); playerTimer = null;
   }
+  // don't keep cycling teams while the tab is hidden (iOS Safari keeps timers running)
+  var stageVisible = false;
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) stopStage();
+    else if (stageVisible) startStage();
+  });
 
   if (reduceMotion){
     document.getElementById('stageWrap').style.display = 'none';
@@ -756,7 +771,8 @@
   } else {
     var stageIO = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
-        if (e.isIntersecting) startStage(); else stopStage();
+        stageVisible = e.isIntersecting;
+        if (e.isIntersecting && !document.hidden) startStage(); else stopStage();
       });
     }, {threshold:0.5});
     stageIO.observe(document.getElementById('s2'));

@@ -599,7 +599,7 @@
     {name:"Matt Perkes", img:"photos/profiles/matt-perkes.jpg"},
     {name:"James Wakefield", img:"photos/profiles/james-wakefield.jpg"},
     {name:"James Reeves", img:"photos/profiles/james-reeves.jpg"},
-    {name:"Mark Williams", img:"photos/profiles/mark-williams.jpg"},
+    {name:"Tom Sampson", initials:"TS", badge:"Provisional"},
     {name:"Marty Whybourne", img:"photos/profiles/marty-whybourne.jpg"},
     {name:"Will Dennis", img:"photos/profiles/will-dennis.jpg"},
     {name:"Andrew Davis", img:"photos/profiles/andrew-davis.jpg"},
@@ -609,12 +609,12 @@
     {name:"Oli Silverton", img:"photos/profiles/ollie-silverton.jpg"},
     {name:"Nat Connor", img:"photos/profiles/nat-connor.jpg"},
     {name:"Nic Forsyth", img:"photos/profiles/nick-forsyth.jpg"},
-    {name:"Hayden Bushell", img:"photos/profiles/hayden-bushell.jpg", badge:"Trip Treasurer"}
+    {name:"Hayden Bushell", img:"photos/profiles/hayden-bushell.jpg", badge:"Trip Treasurer", treasurer:true}
   ];
 
   function roundelContent(p, cls){
     var r = document.createElement('div');
-    r.className = cls + (p.badge ? ' treasurer' : '');
+    r.className = cls + (p.treasurer ? ' treasurer' : '');
     if (p.img){
       var img = document.createElement('img');
       img.src = p.img; img.alt = p.name; img.loading = 'lazy';

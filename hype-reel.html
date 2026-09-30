@@ -212,7 +212,7 @@
   /* ---- SCENE 2: field intros ---- */
   .stage-wrap{ display:flex; flex-direction:column; align-items:center; gap:22px; }
   .stage{
-    position:relative; width:100%; max-width:420px; min-height:340px;
+    position:relative; width:100%; max-width:520px; min-height:400px;
     display:flex; align-items:center; justify-content:center;
   }
   .p-card{
@@ -240,11 +240,22 @@
   .p-tick{ width:14px; height:3px; background:rgba(241,233,210,0.22); transition:background .25s, transform .25s; }
   .p-tick.done, .p-tick.now{ background:var(--brass-bright); }
   .p-tick.now{ transform:scaleY(1.8); }
+  .team-pair{ display:flex; align-items:flex-start; justify-content:center; gap:14px; width:100%; }
+  .team-player{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; }
+  .team-amp{ align-self:center; margin-top:-40px; font-size:1.6rem; color:var(--brass); }
+  .p-card .p-roundel{ width:128px; height:128px; }
+  .p-card .p-name{ font-size:clamp(1.1rem,3.4vw,1.5rem); line-height:1.15; }
+  .p-hcp, .field-hcp{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .hcp-k{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--brass); }
+  .hcp-v{ font-family:'JetBrains Mono',monospace; font-size:2.6rem; line-height:1; color:var(--brass-bright); font-variant-numeric:tabular-nums; }
+  .hcp-sub{ font-size:0.72rem; color:var(--cream-dim); }
+  .field-hcp .hcp-v{ font-size:1.5rem; }
+  .team-card{ padding:16px 10px; border:1px solid var(--line); background:rgba(31,74,54,0.3); }
   .stage-caption{ color:var(--cream-dim); font-size:0.82rem; }
 
   /* ---- field grid (reduced-motion / static fallback) ---- */
   .field-grid{
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:22px 16px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:18px 16px;
     max-width:900px; margin:0 auto;
   }
   .field-card{ display:flex; flex-direction:column; align-items:center; gap:10px; }
@@ -347,6 +358,8 @@
     .scene{ padding:48px 18px; }
     .roundel{ width:74px; height:74px; }
     .p-roundel{ width:130px; height:130px; }
+    .p-card .p-roundel{ width:96px; height:96px; }
+    .team-amp{ margin-top:-30px; font-size:1.2rem; }
   }
   .back-link{
     position:fixed; top:16px; left:16px; z-index:70;
@@ -439,13 +452,13 @@
 <!-- ============ SCENE 2 : THE FIELD ============ -->
 <section class="scene" id="s2">
   <div class="scene-inner">
-    <span class="eyebrow">Confirmed &middot; 16 Signed On</span>
-    <h2 style="font-size:clamp(1.8rem,4.4vw,2.6rem); margin:10px 0 30px;">The Field</h2>
+    <span class="eyebrow">Confirmed &middot; 16 Signed On &middot; 8 Teams</span>
+    <h2 style="font-size:clamp(1.8rem,4.4vw,2.6rem); margin:10px 0 30px;">The Teams</h2>
 
     <div class="stage-wrap" id="stageWrap">
       <div class="stage" id="stage"></div>
       <div class="p-ticks" id="pTicks"></div>
-      <div class="stage-caption">Introducing the field, one tee shot at a time</div>
+      <div class="stage-caption">Introducing the teams, one pairing at a time</div>
     </div>
 
     <div class="field-grid" id="fieldGrid" style="display:none; margin-top:10px;"></div>
@@ -592,29 +605,29 @@
     {text:"See"}, {text:"you"}, {text:"on", br:true}, {text:"the"}, {text:"first"}, {text:"tee."}
   ]);
 
-  // ---------- roster ----------
-  var roster = [
-    {name:"Hugh Stackpool", img:"photos/profiles/hugh-stackpool.jpg"},
-    {name:"Aaron Hickey", img:"photos/profiles/aaron-hickey.jpg"},
-    {name:"Matt Perkes", img:"photos/profiles/matt-perkes.jpg"},
-    {name:"James Wakefield", img:"photos/profiles/james-wakefield.jpg"},
-    {name:"James Reeves", img:"photos/profiles/james-reeves.jpg"},
-    {name:"Mark Williams", img:"photos/profiles/mark-williams.jpg"},
-    {name:"Marty Whybourne", img:"photos/profiles/marty-whybourne.jpg"},
-    {name:"Will Dennis", img:"photos/profiles/will-dennis.jpg"},
-    {name:"Andrew Davis", img:"photos/profiles/andrew-davis.jpg"},
-    {name:"Oscar Austin", img:"photos/profiles/occy-austin.jpg"},
-    {name:"Chris Yarrington", img:"photos/profiles/chris-yarrington.jpg"},
-    {name:"Tom Cooper", img:"photos/profiles/tom-cooper.png"},
-    {name:"Oli Silverton", img:"photos/profiles/ollie-silverton.jpg"},
-    {name:"Nat Connor", img:"photos/profiles/nat-connor.jpg"},
-    {name:"Nic Forsyth", img:"photos/profiles/nick-forsyth.jpg"},
-    {name:"Hayden Bushell", img:"photos/profiles/hayden-bushell.jpg", badge:"Trip Treasurer"}
+  // ---------- teams (Ambrose pairs, ranked by adjusted handicap) ----------
+  var teams = [
+    {players:[{name:"Hayden Bushell", img:"photos/profiles/hayden-bushell.jpg"},
+              {name:"Matt Perkes", img:"photos/profiles/matt-perkes.jpg"}], teamHcp:"16.5", adjHcp:"0"},
+    {players:[{name:"Tom Cooper", img:"photos/profiles/tom-cooper.png"},
+              {name:"Oli Silverton", img:"photos/profiles/ollie-silverton.jpg"}], teamHcp:"19", adjHcp:"2.5"},
+    {players:[{name:"Aaron Hickey", img:"photos/profiles/aaron-hickey.jpg"},
+              {name:"Hugh Stackpool", img:"photos/profiles/hugh-stackpool.jpg"}], teamHcp:"22", adjHcp:"5.5"},
+    {players:[{name:"Tom Sampson", initials:"TS", badge:"Provisional"},
+              {name:"Marty Whybourne", img:"photos/profiles/marty-whybourne.jpg"}], teamHcp:"23", adjHcp:"6.5"},
+    {players:[{name:"Oscar Austin", img:"photos/profiles/occy-austin.jpg"},
+              {name:"Nic Forsyth", img:"photos/profiles/nick-forsyth.jpg"}], teamHcp:"23", adjHcp:"6.5"},
+    {players:[{name:"Nat Connor", img:"photos/profiles/nat-connor.jpg"},
+              {name:"James Reeves", img:"photos/profiles/james-reeves.jpg"}], teamHcp:"23.5", adjHcp:"7"},
+    {players:[{name:"Andrew Davis", img:"photos/profiles/andrew-davis.jpg"},
+              {name:"Will Dennis", img:"photos/profiles/will-dennis.jpg"}], teamHcp:"25.5", adjHcp:"8"},
+    {players:[{name:"James Wakefield", img:"photos/profiles/james-wakefield.jpg"},
+              {name:"Chris Yarrington", img:"photos/profiles/chris-yarrington.jpg"}], teamHcp:"25.5", adjHcp:"8"}
   ];
 
   function roundelContent(p, cls){
     var r = document.createElement('div');
-    r.className = cls + (p.badge ? ' treasurer' : '');
+    r.className = cls + (p.treasurer ? ' treasurer' : '');
     if (p.img){
       var img = document.createElement('img');
       img.src = p.img; img.alt = p.name; img.loading = 'lazy';
@@ -629,25 +642,46 @@
 
   // static fallback grid (shown at rest for reduced-motion users)
   var grid = document.getElementById('fieldGrid');
-  roster.forEach(function(p){
-    var card = document.createElement('div');
-    card.className = 'field-card';
-    card.appendChild(roundelContent(p, 'roundel'));
+  function playerBlock(p, roundelCls, nameCls, badgeCls){
+    var wrap = document.createElement('div');
+    wrap.className = 'team-player';
+    wrap.appendChild(roundelContent(p, roundelCls));
     var nm = document.createElement('div');
-    nm.className = 'field-name'; nm.textContent = p.name;
-    card.appendChild(nm);
+    nm.className = nameCls; nm.textContent = p.name;
+    wrap.appendChild(nm);
     if (p.badge){
       var b = document.createElement('div');
-      b.className = 'field-badge'; b.textContent = p.badge;
-      card.appendChild(b);
+      b.className = badgeCls; b.textContent = p.badge;
+      wrap.appendChild(b);
     }
+    return wrap;
+  }
+  function hcpBlock(t, cls){
+    var h = document.createElement('div');
+    h.className = cls;
+    h.innerHTML = '<span class="hcp-k">Adjusted HCP</span><span class="hcp-v"></span><span class="hcp-sub"></span>';
+    h.querySelector('.hcp-v').textContent = t.adjHcp;
+    h.querySelector('.hcp-sub').textContent = 'Team HCP ' + t.teamHcp;
+    return h;
+  }
+  teams.forEach(function(t, i){
+    var card = document.createElement('div');
+    card.className = 'field-card team-card';
+    var rk = document.createElement('div');
+    rk.className = 'field-badge'; rk.textContent = 'Team ' + String(i + 1).padStart(2, '0');
+    card.appendChild(rk);
+    var pair = document.createElement('div');
+    pair.className = 'team-pair';
+    t.players.forEach(function(p){ pair.appendChild(playerBlock(p, 'roundel', 'field-name', 'field-badge')); });
+    card.appendChild(pair);
+    card.appendChild(hcpBlock(t, 'field-hcp'));
     grid.appendChild(card);
   });
 
   // ---------- player intro stage ----------
   var stage = document.getElementById('stage');
   var ticksWrap = document.getElementById('pTicks');
-  roster.forEach(function(){
+  teams.forEach(function(){
     var t = document.createElement('div');
     t.className = 'p-tick';
     ticksWrap.appendChild(t);
@@ -659,24 +693,29 @@
     card.className = 'p-card';
     var num = document.createElement('div');
     num.className = 'p-number';
-    num.textContent = String(idx + 1).padStart(2, '0') + ' / ' + roster.length;
-    var roundel = roundelContent(p, 'p-roundel');
-    var name = document.createElement('div');
-    name.className = 'p-name display'; name.textContent = p.name;
-    card.appendChild(num); card.appendChild(roundel); card.appendChild(name);
-    if (p.badge){
-      var b = document.createElement('div');
-      b.className = 'p-badge'; b.textContent = p.badge;
-      card.appendChild(b);
-    }
+    num.textContent = 'TEAM ' + String(idx + 1).padStart(2, '0') + ' / ' + String(teams.length).padStart(2, '0');
+    card.appendChild(num);
+    var pair = document.createElement('div');
+    pair.className = 'team-pair';
+    p.players.forEach(function(pl, i){
+      if (i) {
+        var amp = document.createElement('div');
+        amp.className = 'team-amp display'; amp.textContent = '&';
+        pair.appendChild(amp);
+      }
+      pair.appendChild(playerBlock(pl, 'p-roundel', 'p-name display', 'p-badge'));
+    });
+    card.appendChild(pair);
+    card.appendChild(hcpBlock(p, 'p-hcp'));
     return card;
   }
 
+  var TEAM_MS = 2600;
   var playerIdx = 0, playerTimer = null, stageActive = false;
   function showPlayer(idx){
     var prev = stage.querySelector('.p-card.enter');
     function insertCard(){
-      var card = buildPlayerCard(roster[idx], idx);
+      var card = buildPlayerCard(teams[idx], idx);
       stage.appendChild(card);
       requestAnimationFrame(function(){ card.classList.add('enter'); });
     }
@@ -701,9 +740,9 @@
     showPlayer(playerIdx);
     if (!reduceMotion){
       playerTimer = setInterval(function(){
-        playerIdx = (playerIdx + 1) % roster.length;
+        playerIdx = (playerIdx + 1) % teams.length;
         showPlayer(playerIdx);
-      }, 1700);
+      }, TEAM_MS);
     }
   }
   function stopStage(){
@@ -772,7 +811,7 @@
   var fieldSceneIdx = scenes.indexOf(document.getElementById('s2'));
   var autoplayOn = false, advanceTimer = null;
   function sceneDwell(idx){
-    if (idx === fieldSceneIdx) return roster.length * 1700 + 500;
+    if (idx === fieldSceneIdx) return teams.length * TEAM_MS + 500;
     return 6000;
   }
   function scheduleAdvance(){

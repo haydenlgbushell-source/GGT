@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Engraving — GGT XVI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt-dark:#0c2018;
+    --felt:#163728;
+    --brass:#c9a227;
+    --brass-bright:#e6c558;
+    --cream:#f1e9d2;
+    --cream-dim:#cdc2a0;
+    --maroon:#6e2a36;
+    --maroon-bright:#8a3645;
+    --line: rgba(201,162,39,0.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--felt-dark);
+    color:var(--cream);
+    font-family:'Public Sans', sans-serif;
+    overflow:hidden;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  .eyebrow{ font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:0.22em; font-size:0.72rem; color:var(--brass-bright); }
+
+  /* ---------- STAGE ---------- */
+  #viewport{
+    position:fixed; inset:0; overflow:hidden;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 45%, rgba(31,74,54,0.75), transparent 70%),
+      var(--felt-dark);
+  }
+  #camera{
+    position:absolute; top:0; left:0; width:1000px;
+    transform-origin:0 0;
+    transition:transform 1.8s cubic-bezier(0.65,0,0.25,1);
+    will-change:transform;
+  }
+  #camera.instant{ transition:none; }
+  #lights{
+    position:fixed; inset:0; pointer-events:none; z-index:5;
+    background:radial-gradient(ellipse 45% 55% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.97));
+    opacity:1; transition:opacity 1.4s ease;
+  }
+  #lights.up{ opacity:0; }
+  #sparks{ position:fixed; inset:0; pointer-events:none; z-index:20; }
+
+  /* ---------- HONOUR BOARD (matches site.html) ---------- */
+  .honour-board{
+    position:relative;
+    background-color:#3d2510;
+    background-image:
+      linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%),
+      repeating-linear-gradient(180deg,
+        #4a2e16 0px, #3d2510 6px, #523418 10px, #3a2410 16px,
+        #45291a 20px, #4e3118 28px, #3d2510 32px, #42280f 38px,
+        #4a2e16 44px, #3d2510 50px, #553a1e 54px, #3a2410 60px
+      ),
+      repeating-linear-gradient(180deg,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px,
+        transparent 4px, transparent 11px,
+        rgba(80,50,20,0.1) 11px, rgba(80,50,20,0.1) 12px,
+        transparent 12px, transparent 19px
+      ),
+      radial-gradient(ellipse 120px 80px at 25% 60%, rgba(90,55,20,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 90px 60px at 72% 35%, rgba(80,48,18,0.12) 0%, transparent 70%);
+    border:6px solid #2a1a08;
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,0.35),
+      inset 0 2px 4px rgba(255,220,150,0.06),
+      0 8px 32px rgba(0,0,0,0.6),
+      0 30px 80px rgba(0,0,0,0.5);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .honour-board::before{
+    content:"";position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(92deg, transparent 0px, rgba(0,0,0,0.06) 1px, transparent 1.5px, transparent 8px),
+      repeating-linear-gradient(88deg, transparent 0px, rgba(60,35,10,0.04) 0.5px, transparent 1px, transparent 14px);
+    pointer-events:none; z-index:1;
+  }
+  .honour-board .corner{ position:absolute; width:22px; height:22px; z-index:2; pointer-events:none; }
+  .corner.tl{top:4px;left:4px;border-top:2px solid rgba(180,140,50,0.4);border-left:2px solid rgba(180,140,50,0.4);}
+  .corner.tr{top:4px;right:4px;border-top:2px solid rgba(180,140,50,0.4);border-right:2px solid rgba(180,140,50,0.4);}
+  .corner.bl{bottom:4px;left:4px;border-bottom:2px solid rgba(180,140,50,0.4);border-left:2px solid rgba(180,140,50,0.4);}
+  .corner.br{bottom:4px;right:4px;border-bottom:2px solid rgba(180,140,50,0.4);border-right:2px solid rgba(180,140,50,0.4);}
+  .board-nameplate{
+    text-align:center; padding:24px 20px 20px;
+    border-bottom:3px solid #1e1408;
+    background:linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.06) 100%);
+    position:relative; box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  }
+  .board-title{
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem;
+    color:#d4a843; letter-spacing:0.18em; text-transform:uppercase;
+    text-shadow:0 1px 2px rgba(0,0,0,0.5), 0 0 12px rgba(212,168,67,0.15);
+  }
+  .board-subtitle{
+    font-size:0.62rem; letter-spacing:0.35em; text-transform:uppercase; color:#b8923a;
+    margin-top:4px; text-shadow:0 1px 2px rgba(0,0,0,0.4);
+  }
+  .board-grid{ display:grid; grid-template-columns:repeat(4, 1fr); padding:16px; position:relative; z-index:2; }
+  .board-cell{
+    border:1px solid rgba(20,12,4,0.4);
+    box-shadow:inset 1px 1px 0 rgba(90,60,25,0.08), inset -1px -1px 0 rgba(0,0,0,0.08);
+    text-align:center; padding:18px 12px; position:relative;
+  }
+  .cell-num{ font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:#d4a843; letter-spacing:0.08em; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+  .cell-loc{ font-size:0.68rem; color:#9a7a32; margin-top:2px; text-shadow:0 1px 2px rgba(0,0,0,0.4); }
+  .cell-year{ font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#8a6e2e; letter-spacing:0.1em; margin-top:1px; }
+  .cell-rule{ width:32px; height:1px; background:rgba(180,140,50,0.3); margin:10px auto; }
+  .cell-winner{
+    font-family:'Fraunces',serif; font-size:0.88rem; color:#d4a843;
+    line-height:1.4; padding:2px 0; letter-spacing:0.02em;
+    text-shadow:0 1px 2px rgba(0,0,0,0.45), 0 0 8px rgba(212,168,67,0.08);
+    min-height:1.6em;
+  }
+  .board-tally-section{
+    border-top:3px solid #1e1408; padding:18px 20px;
+    background:rgba(0,0,0,0.08); box-shadow:inset 0 2px 6px rgba(0,0,0,0.15);
+    position:relative; z-index:2;
+  }
+  .board-tally-title{
+    font-family:'Fraunces',serif; font-weight:600; font-size:0.78rem;
+    color:#b8923a; letter-spacing:0.2em; text-transform:uppercase;
+    text-align:center; margin-bottom:14px;
+  }
+  .tally-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px 16px; }
+  .tally-item{ display:flex; align-items:center; justify-content:space-between; padding:4px 8px; border-bottom:1px solid rgba(42,26,8,0.3); }
+  .tally-name{ font-family:'Fraunces',serif; font-size:0.78rem; color:#c49a30; text-shadow:0 1px 2px rgba(0,0,0,0.4); }
+  .tally-count{ font-family:'JetBrains Mono',monospace; font-size:0.88rem; font-weight:700; color:#d4a843; }
+
+  /* ---------- CEREMONY EFFECTS ---------- */
+  .board-cell.past{ opacity:0; }
+  .board-cell.past.show{ animation:cellIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+  @keyframes cellIn{ from{ opacity:0; transform:scale(0.94); } to{ opacity:1; transform:scale(1); } }
+
+  .board-cell.target{
+    background:radial-gradient(ellipse at 50% 60%, rgba(255,210,120,0.08), transparent 70%);
+  }
+  .board-cell.target.awaiting{ animation:await 1.6s ease-in-out infinite; }
+  @keyframes await{
+    0%,100%{ box-shadow:inset 0 0 0 1px rgba(230,197,88,0.15), inset 0 0 18px rgba(230,197,88,0.05); }
+    50%{ box-shadow:inset 0 0 0 1px rgba(230,197,88,0.55), inset 0 0 28px rgba(230,197,88,0.2); }
+  }
+  .board-cell.target.flash{ animation:flash 1.2s ease-out; }
+  @keyframes flash{
+    0%{ box-shadow:inset 0 0 0 2px rgba(255,240,190,0.9), inset 0 0 60px rgba(255,220,130,0.6), 0 0 40px rgba(255,210,110,0.5); }
+    100%{ box-shadow:inset 0 0 0 1px rgba(230,197,88,0.25), inset 0 0 18px rgba(230,197,88,0.06); }
+  }
+  .ltr{ display:inline-block; white-space:pre; opacity:0; }
+  .ltr.lit{ animation:molten 1.8s ease-out forwards; }
+  @keyframes molten{
+    0%{ opacity:0; color:#fffaf0; transform:translateY(-1px) scale(1.35);
+        text-shadow:0 0 4px #fff, 0 0 12px #ffe08a, 0 0 26px #ff9d2e; }
+    12%{ opacity:1; transform:none; color:#fff3c8; }
+    45%{ color:#f6d27a; text-shadow:0 0 4px rgba(255,220,140,0.7), 0 0 12px rgba(255,170,60,0.35); }
+    100%{ opacity:1; color:#d4a843; transform:none;
+        text-shadow:0 1px 2px rgba(0,0,0,0.45), 0 0 8px rgba(212,168,67,0.12); }
+  }
+  .cell-amp{ font-size:0.72rem; color:#9a7a32; font-style:italic; font-family:'Fraunces',serif; opacity:0; transition:opacity 0.4s; }
+  .cell-amp.show{ opacity:1; }
+
+  .shine{
+    position:absolute; inset:-20%; z-index:3; pointer-events:none;
+    background:linear-gradient(105deg, transparent 40%, rgba(255,236,170,0.0) 44%, rgba(255,236,170,0.28) 50%, rgba(255,236,170,0) 56%, transparent 60%);
+    transform:translateX(-100%); mix-blend-mode:screen;
+  }
+  .shine.go{ animation:sweep 1.6s ease-in-out forwards; }
+  @keyframes sweep{ to{ transform:translateX(100%); } }
+
+  .honour-board.shake{ animation:shake 0.45s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes shake{
+    10%,90%{ transform:translate(-2px,1px); }
+    20%,80%{ transform:translate(4px,-2px); }
+    30%,50%,70%{ transform:translate(-6px,2px); }
+    40%,60%{ transform:translate(6px,-1px); }
+  }
+
+  .tally-item.fresh{ opacity:0; }
+  .tally-item.fresh.show{ animation:freshIn 1.6s ease forwards; }
+  @keyframes freshIn{
+    0%{ opacity:0; transform:translateX(-12px); background:rgba(255,220,130,0.0); }
+    20%{ opacity:1; transform:none; background:rgba(255,220,130,0.25); }
+    100%{ opacity:1; background:rgba(255,220,130,0.07); }
+  }
+
+  /* ---------- WAX SEAL ---------- */
+  #seal{
+    position:fixed; z-index:15; width:120px; height:120px; pointer-events:none;
+    opacity:0; transform:translate(-50%,-50%) scale(3) rotate(-30deg);
+  }
+  #seal.stamp{ animation:stamp 0.55s cubic-bezier(0.5,0,0.75,0) forwards; }
+  @keyframes stamp{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(3) rotate(-30deg); }
+    70%{ opacity:1; }
+    100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-12deg); }
+  }
+  #seal svg{ width:100%; height:100%; overflow:visible; filter:drop-shadow(0 6px 10px rgba(0,0,0,0.6)); }
+
+  /* ---------- OVERLAY UI ---------- */
+  #intro{
+    position:fixed; inset:0; z-index:30;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    padding:24px 16px; gap:14px;
+    transition:opacity 0.8s ease;
+  }
+  #intro.gone{ opacity:0; pointer-events:none; }
+  #intro h1{
+    font-family:'Fraunces',serif; font-weight:900; font-size:clamp(2.4rem, 8vw, 5rem);
+    color:var(--cream); letter-spacing:0.01em; line-height:1;
+  }
+  #intro h1 em{ color:var(--brass-bright); font-style:italic; }
+  #intro p{ color:var(--cream-dim); max-width:34ch; line-height:1.5; }
+  .btn{
+    font:inherit; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.18em; font-size:0.78rem;
+    color:var(--felt-dark); background:var(--brass-bright); border:1px solid var(--brass-bright);
+    padding:14px 26px; cursor:pointer; text-decoration:none; display:inline-block;
+    transition:transform 0.2s, background 0.2s;
+  }
+  .btn:hover{ transform:translateY(-2px); background:#f1d572; }
+  .btn.ghost{ background:transparent; color:var(--brass-bright); }
+  .btn.ghost:hover{ background:rgba(230,197,88,0.12); }
+
+  #caption{
+    position:fixed; left:0; right:0; bottom:6vh; z-index:25; text-align:center; padding:0 16px;
+    pointer-events:none;
+  }
+  #caption .cap-eyebrow{ display:block; margin-bottom:8px; opacity:0; transition:opacity 0.6s; }
+  #caption .cap-text{
+    font-family:'Fraunces',serif; font-weight:700; font-size:clamp(1.3rem, 4vw, 2.4rem);
+    color:var(--cream); text-shadow:0 2px 16px rgba(0,0,0,0.9);
+  }
+  #caption.show .cap-eyebrow{ opacity:1; }
+  .word{ display:inline-block; opacity:0; transform:translateY(0.5em); animation:wordUp 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+  .word.accent{ color:var(--brass-bright); }
+  @keyframes wordUp{ to{ opacity:1; transform:none; } }
+
+  #controls{
+    position:fixed; top:16px; right:16px; z-index:35; display:flex; gap:8px;
+    opacity:0; pointer-events:none; transition:opacity 0.6s;
+  }
+  #controls.show{ opacity:1; pointer-events:auto; }
+  #controls .btn{ padding:10px 14px; font-size:0.68rem; }
+  .back-link{
+    position:fixed; top:16px; left:16px; z-index:35;
+    font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--cream-dim); text-decoration:none; opacity:0.75;
+  }
+  .back-link:hover{ opacity:1; color:var(--brass-bright); }
+  #muteBtn{
+    position:fixed; bottom:16px; right:16px; z-index:35;
+    background:rgba(0,0,0,0.35); color:var(--cream-dim); border:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace; font-size:0.66rem; letter-spacing:0.12em; text-transform:uppercase;
+    padding:8px 12px; cursor:pointer;
+  }
+
+  @media (max-width:600px){
+    #seal{ width:72px; height:72px; }
+    #controls{ top:10px; right:10px; gap:6px; }
+    #controls .btn{ padding:8px 10px; font-size:0.6rem; letter-spacing:0.12em; }
+    .back-link{ top:auto; bottom:22px; }
+  }
+</style>
+</head>
+<body>
+
+<script>
+// ---------- AUTH GATE ----------
+(function(){
+  var k = [66,117,99,107,87,105,108,108,70,117,99,107];
+  var s = localStorage.getItem('ggt-auth');
+  if(s !== String.fromCharCode.apply(null,k)){
+    window.location.href = 'index.html?next=engraving.html';
+  }
+})();
+</script>
+
+<div id="viewport">
+  <div id="camera">
+    <div class="honour-board" id="board">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="shine" id="shine"></div>
+      <div class="board-nameplate">
+        <div class="board-title">Gentlemen's Golf Tour</div>
+        <div class="board-subtitle">Honour Board &middot; Est. 2012</div>
+      </div>
+      <div class="board-grid" id="boardGrid"></div>
+      <div class="board-tally-section">
+        <div class="board-tally-title">Total Wins</div>
+        <div class="tally-grid" id="tallyGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="lights"></div>
+<canvas id="sparks"></canvas>
+
+<div id="seal" aria-hidden="true">
+  <svg viewBox="-80 -80 160 160">
+    <defs>
+      <radialGradient id="wax" cx="40%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#a8424f"/>
+        <stop offset="55%" stop-color="#7a2c38"/>
+        <stop offset="100%" stop-color="#4a1820"/>
+      </radialGradient>
+      <path id="ring" d="M 0,0 m -50,0 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0"/>
+    </defs>
+    <path fill="url(#wax)" d="M0,-74 C14,-76 22,-66 34,-64 C48,-62 58,-56 62,-42 C66,-30 76,-20 74,-6 C72,8 78,20 70,32 C62,44 60,58 46,64 C32,70 22,78 6,74 C-10,72 -22,78 -34,70 C-46,62 -60,60 -66,46 C-72,32 -78,20 -74,4 C-72,-10 -76,-24 -66,-36 C-58,-48 -54,-60 -40,-66 C-26,-72 -14,-72 0,-74 Z"/>
+    <circle r="58" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="3"/>
+    <circle r="40" fill="none" stroke="rgba(255,210,190,0.28)" stroke-width="1"/>
+    <text font-family="JetBrains Mono, monospace" font-size="9.2" font-weight="700" letter-spacing="2" fill="rgba(255,225,205,0.85)">
+      <textPath href="#ring" startOffset="0">FIRST ALL-PROVISIONAL CHAMPIONS ·</textPath>
+    </text>
+    <text y="10" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="30" fill="rgba(255,225,205,0.92)">XVI</text>
+  </svg>
+</div>
+
+<a class="back-link" href="site.html#winners">&larr; GGT Site</a>
+
+<div id="intro">
+  <span class="eyebrow">GGT Honour Board &middot; Edition XVI</span>
+  <h1>The <em>Engraving</em></h1>
+  <p>Mornington Peninsula, October 2026. Two names are about to go on the board for good.</p>
+  <button class="btn" id="startBtn">Unveil the champions</button>
+</div>
+
+<div id="caption"><span class="eyebrow cap-eyebrow" id="capEyebrow"></span><div class="cap-text" id="capText"></div></div>
+
+<div id="controls">
+  <button class="btn ghost" id="replayBtn">&#8634; Replay</button>
+  <a class="btn" href="site.html#winners">Back to site</a>
+</div>
+<button id="muteBtn" aria-pressed="false">&#128266; Sound on</button>
+
+<script>
+(function(){
+  // ---------- DATA (mirrors the editions list in site.html) ----------
+  var editions = [
+    {num:"I",    loc:"Hunter Valley",               year:"2012", winners:["Aaron Hickey","Nick Bateman"]},
+    {num:"II",   loc:"Mollymook",                   year:"2012", winners:["Mitch Corrigan","Nick Bateman"]},
+    {num:"III",  loc:"Magenta Shores",              year:"2013", winners:["Oli Finley","Nat Connor"]},
+    {num:"IV",   loc:"Callala Beach",               year:"2013", winners:["Hayden Bushell","James Wakefield"]},
+    {num:"V",    loc:"Port Stephens",               year:"2014", winners:["Jazz Mathers","Aaron Hickey"]},
+    {num:"VI",   loc:"Bowral",                      year:"2016", winners:["Aaron Hickey","James Wakefield"]},
+    {num:"VII",  loc:"Hunter Valley (Round 2)",     year:"2017", winners:["Aaron Hickey","Brad Drinkwater"]},
+    {num:"VIII", loc:"Koowindah Waters &amp; Magenta Shores", year:"2018", winners:["Mitch Corrigan","Mark Williams"]},
+    {num:"IX",   loc:"Newcastle",                   year:"2019", winners:["Matt Perkes","Nat Connor"]},
+    {num:"X",    loc:"Bonville Golf Resort",        year:"2020", winners:["James Reeves","Chris Yarrington"]},
+    {num:"XI",   loc:"The Entrance",                year:"2021", winners:["Nick Bateman","Oli Finley"]},
+    {num:"XII",  loc:"Bonville Golf Resort",        year:"2022", winners:["Marty Howard","Nat Connor"]},
+    {num:"XIII", loc:"Burleigh Heads, Gold Coast",  year:"2023", winners:["Hayden Bushell","George Davey"]},
+    {num:"XIV",  loc:"Noosa Heads, Sunshine Coast", year:"2024", winners:["Mitch Corrigan","Nat Connor"]},
+    {num:"XV",   loc:"Nelson Bay",                  year:"2025", winners:["Matt Perkes","Drew Davis"]},
+    {num:"XVI",  loc:"Mornington Peninsula",        year:"2026", winners:["Ollie Silverton","Tom Cooper"]}
+  ];
+  var latest = editions[editions.length - 1];
+
+  var camera = document.getElementById('camera');
+  var board = document.getElementById('board');
+  var grid = document.getElementById('boardGrid');
+  var tallyGrid = document.getElementById('tallyGrid');
+  var lights = document.getElementById('lights');
+  var seal = document.getElementById('seal');
+  var shine = document.getElementById('shine');
+  var capEyebrow = document.getElementById('capEyebrow');
+  var capText = document.getElementById('capText');
+  var caption = document.getElementById('caption');
+  var controls = document.getElementById('controls');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var targetCell, targetNames = [], targetAmp, freshTally = [];
+
+  function build(){
+    grid.innerHTML = '';
+    targetNames = [];
+    editions.forEach(function(e){
+      var cell = document.createElement('div');
+      var isLatest = e === latest;
+      cell.className = 'board-cell ' + (isLatest ? 'target' : 'past');
+      cell.innerHTML =
+        '<div class="cell-num">' + e.num + '</div>' +
+        '<div class="cell-loc">' + e.loc + '</div>' +
+        '<div class="cell-year">' + e.year + '</div>' +
+        '<div class="cell-rule"></div>';
+      if (isLatest){
+        e.winners.forEach(function(w, i){
+          if (i > 0){
+            targetAmp = document.createElement('div');
+            targetAmp.className = 'cell-amp';
+            targetAmp.textContent = '&';
+            cell.appendChild(targetAmp);
+          }
+          var div = document.createElement('div');
+          div.className = 'cell-winner';
+          w.split('').forEach(function(ch){
+            var s = document.createElement('span');
+            s.className = 'ltr';
+            s.textContent = ch;
+            div.appendChild(s);
+          });
+          cell.appendChild(div);
+          targetNames.push(div);
+        });
+        targetCell = cell;
+      } else {
+        e.winners.forEach(function(w){
+          var div = document.createElement('div');
+          div.className = 'cell-winner';
+          div.textContent = w;
+          cell.appendChild(div);
+        });
+      }
+      grid.appendChild(cell);
+    });
+
+    var tally = {};
+    editions.forEach(function(e){ e.winners.forEach(function(w){ tally[w] = (tally[w]||0) + 1; }); });
+    var ranked = Object.keys(tally).map(function(k){ return [k, tally[k]]; })
+      .sort(function(a,b){ return b[1] - a[1]; });
+    tallyGrid.innerHTML = '';
+    freshTally = [];
+    ranked.forEach(function(r){
+      var item = document.createElement('div');
+      item.className = 'tally-item';
+      if (latest.winners.indexOf(r[0]) !== -1){ item.classList.add('fresh'); freshTally.push(item); }
+      item.innerHTML = '<span class="tally-name">' + r[0] + '</span><span class="tally-count">' + r[1] + '</span>';
+      tallyGrid.appendChild(item);
+    });
+  }
+
+  // ---------- CAMERA ----------
+  var camMode = 'board';
+  function fitTransform(){
+    var W = window.innerWidth, H = window.innerHeight;
+    var bw = board.offsetWidth, bh = board.offsetHeight;
+    // leave room underneath for the caption
+    var s = Math.min((W - 32) / bw, (H - 200) / bh, 1.1);
+    return { s:s, x:(W - bw * s) / 2, y:Math.max(48, (H - 150 - bh * s) / 2 + 24) };
+  }
+  function cellTransform(){
+    var W = window.innerWidth, H = window.innerHeight;
+    // the grid is positioned, so the cell's offsets are relative to it
+    var cx = grid.offsetLeft + targetCell.offsetLeft + targetCell.offsetWidth / 2;
+    var cy = grid.offsetTop + targetCell.offsetTop + targetCell.offsetHeight / 2;
+    var s = Math.min(W * 0.86 / targetCell.offsetWidth, H * 0.5 / targetCell.offsetHeight, 5);
+    return { s:s, x:W / 2 - cx * s, y:H * 0.44 - cy * s };
+  }
+  function setCamera(mode, instant){
+    camMode = mode;
+    var t = mode === 'cell' ? cellTransform() : fitTransform();
+    camera.classList.toggle('instant', !!instant);
+    camera.style.transform = 'translate(' + t.x + 'px,' + t.y + 'px) scale(' + t.s + ')';
+    if (instant){ void camera.offsetWidth; camera.classList.remove('instant'); }
+  }
+  window.addEventListener('resize', function(){ setCamera(camMode, true); resizeCanvas(); placeSeal(); });
+
+  // ---------- SPARKS ----------
+  var canvas = document.getElementById('sparks');
+  var ctx2d = canvas.getContext('2d');
+  var parts = [];
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resizeCanvas(){
+    canvas.width = window.innerWidth * dpr; canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px'; canvas.style.height = window.innerHeight + 'px';
+  }
+  resizeCanvas();
+  var sparkColours = ['#fffaf0', '#ffe08a', '#ffc24a', '#ff9d2e', '#e6c558'];
+  function sparkBurst(x, y, n, power){
+    for (var i = 0; i < n; i++){
+      var a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.4;
+      var v = (1.5 + Math.random() * 4.5) * (power || 1);
+      parts.push({ kind:'spark', x:x, y:y, vx:Math.cos(a) * v, vy:Math.sin(a) * v,
+        life:1, decay:0.018 + Math.random() * 0.03, c:sparkColours[(Math.random() * sparkColours.length) | 0] });
+    }
+  }
+  var confettiColours = ['#e6c558', '#c9a227', '#f1e9d2', '#8a3645', '#d4a843'];
+  function confetti(x, y, n){
+    for (var i = 0; i < n; i++){
+      var a = Math.random() * Math.PI * 2;
+      var v = 3 + Math.random() * 9;
+      parts.push({ kind:'conf', x:x, y:y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - 4,
+        life:1, decay:0.004 + Math.random() * 0.006, rot:Math.random() * 6, vr:(Math.random() - 0.5) * 0.4,
+        flip:Math.random() * 6, w:5 + Math.random() * 6, h:3 + Math.random() * 4,
+        c:confettiColours[(Math.random() * confettiColours.length) | 0] });
+    }
+  }
+  function tick(){
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = parts.length - 1; i >= 0; i--){
+      var p = parts[i];
+      if (p.kind === 'spark'){
+        p.vy += 0.18; p.vx *= 0.98;
+        var ox = p.x, oy = p.y;
+        p.x += p.vx; p.y += p.vy;
+        ctx2d.globalCompositeOperation = 'lighter';
+        ctx2d.strokeStyle = p.c; ctx2d.globalAlpha = Math.max(0, p.life);
+        ctx2d.lineWidth = 1.6; ctx2d.beginPath(); ctx2d.moveTo(ox - p.vx, oy - p.vy); ctx2d.lineTo(p.x, p.y); ctx2d.stroke();
+      } else {
+        p.vy += 0.16; p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.flip += 0.15;
+        ctx2d.globalCompositeOperation = 'source-over';
+        ctx2d.globalAlpha = Math.max(0, Math.min(1, p.life * 1.5));
+        ctx2d.save(); ctx2d.translate(p.x, p.y); ctx2d.rotate(p.rot); ctx2d.scale(1, Math.cos(p.flip));
+        ctx2d.fillStyle = p.c; ctx2d.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx2d.restore();
+      }
+      p.life -= p.decay;
+      if (p.life <= 0 || p.y > window.innerHeight + 40) parts.splice(i, 1);
+    }
+    ctx2d.globalAlpha = 1;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // ---------- SOUND (synthesised, no files) ----------
+  var ac = null, master = null, muted = false;
+  function initAudio(){
+    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    try {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      master = ac.createGain(); master.gain.value = 0.7; master.connect(ac.destination);
+      ac.resume();
+    } catch(e){ ac = null; }
+  }
+  function noiseBuffer(sec){
+    var b = ac.createBuffer(1, ac.sampleRate * sec, ac.sampleRate), d = b.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return b;
+  }
+  function sfxTick(){
+    if (!ac || muted) return;
+    var t = ac.currentTime, src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noiseBuffer(0.05); f.type = 'bandpass'; f.frequency.value = 3200 + Math.random() * 2400; f.Q.value = 3;
+    g.gain.setValueAtTime(0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+    src.connect(f); f.connect(g); g.connect(master); src.start(t);
+  }
+  function sfxRoll(dur){
+    if (!ac || muted) return;
+    var t = ac.currentTime, src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(), lfo = ac.createOscillator(), lg = ac.createGain();
+    src.buffer = noiseBuffer(dur + 0.2); f.type = 'lowpass'; f.frequency.value = 900;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + dur * 0.9); g.gain.linearRampToValueAtTime(0, t + dur);
+    lfo.frequency.value = 18; lg.gain.value = 0.12; lfo.connect(lg); lg.connect(g.gain);
+    src.connect(f); f.connect(g); g.connect(master); src.start(t); lfo.start(t); src.stop(t + dur + 0.1); lfo.stop(t + dur + 0.1);
+  }
+  function sfxChime(){
+    if (!ac || muted) return;
+    var t = ac.currentTime;
+    [1046.5, 1318.5, 1568, 2093].forEach(function(fq, i){
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = fq;
+      g.gain.setValueAtTime(0.0001, t + i * 0.07); g.gain.exponentialRampToValueAtTime(0.18, t + i * 0.07 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.07 + 1.8);
+      o.connect(g); g.connect(master); o.start(t + i * 0.07); o.stop(t + i * 0.07 + 2);
+    });
+  }
+  function sfxThud(){
+    if (!ac || muted) return;
+    var t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.3);
+    g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.55);
+    var src = ac.createBufferSource(), f = ac.createBiquadFilter(), g2 = ac.createGain();
+    src.buffer = noiseBuffer(0.2); f.type = 'lowpass'; f.frequency.value = 600;
+    g2.gain.setValueAtTime(0.5, t); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    src.connect(f); f.connect(g2); g2.connect(master); src.start(t);
+  }
+  var muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', function(){
+    muted = !muted;
+    muteBtn.setAttribute('aria-pressed', String(muted));
+    muteBtn.innerHTML = muted ? '&#128263; Sound off' : '&#128266; Sound on';
+  });
+
+  // ---------- HELPERS ----------
+  var runId = 0;
+  function wait(ms){
+    var id = runId;
+    return new Promise(function(res, rej){ setTimeout(function(){ id === runId ? res() : rej('cancelled'); }, ms); });
+  }
+  function say(eyebrow, words){
+    capEyebrow.textContent = eyebrow || '';
+    caption.classList.toggle('show', !!eyebrow);
+    capText.innerHTML = '';
+    (words || []).forEach(function(w, i){
+      var s = document.createElement('span');
+      s.className = 'word' + (w.accent ? ' accent' : '');
+      s.textContent = w.text;
+      s.style.animationDelay = (i * 0.12) + 's';
+      capText.appendChild(s);
+      capText.appendChild(document.createTextNode(' '));
+    });
+  }
+  function words(str, accents){
+    return str.split(' ').map(function(t){ return { text:t, accent:(accents || []).indexOf(t) !== -1 }; });
+  }
+  function centreOf(el){
+    var r = el.getBoundingClientRect();
+    return { x:r.left + r.width / 2, y:r.top + r.height / 2, r:r };
+  }
+  function placeSeal(){
+    if (!targetCell) return;
+    // hang it off the cell's top-right corner, clear of the names, kept on screen
+    var r = targetCell.getBoundingClientRect(), half = seal.offsetWidth / 2;
+    seal.style.left = Math.min(r.right + half * 0.35, window.innerWidth - half - 6) + 'px';
+    seal.style.top = Math.max(r.top - half * 0.15, half + 6) + 'px';
+  }
+
+  async function engrave(){
+    for (var n = 0; n < targetNames.length; n++){
+      if (n > 0){ targetAmp.classList.add('show'); await wait(450); }
+      var letters = targetNames[n].querySelectorAll('.ltr');
+      for (var i = 0; i < letters.length; i++){
+        var l = letters[i];
+        l.classList.add('lit');
+        if (l.textContent.trim()){
+          var r = l.getBoundingClientRect();
+          sparkBurst(r.right, r.top + r.height * 0.75, 14, 1);
+          sfxTick();
+          await wait(95 + Math.random() * 40);
+        } else {
+          await wait(160);
+        }
+      }
+      await wait(350);
+    }
+  }
+
+  // ---------- SEQUENCE ----------
+  async function run(){
+    var id = ++runId;
+    reset();
+    try {
+      setCamera('board', true);
+      await wait(150);
+      lights.classList.add('up');
+      var past = grid.querySelectorAll('.board-cell.past');
+      past.forEach(function(c, i){ c.style.animationDelay = (0.2 + i * 0.07) + 's'; c.classList.add('show'); });
+      targetCell.classList.add('awaiting');
+      await wait(2200);
+
+      say('Edition XVI · October 2026', words('Mornington Peninsula', ['Peninsula']));
+      sfxRoll(2.2);
+      setCamera('cell');
+      await wait(2300);
+
+      say('', []);
+      await wait(400);
+      targetCell.classList.remove('awaiting');
+      await engrave();
+
+      targetCell.classList.add('flash');
+      var c = centreOf(targetCell);
+      sparkBurst(c.x, c.y, 60, 1.6);
+      sfxChime();
+      say('GGT XVI Champions', words('Ollie Silverton & Tom Cooper', ['Silverton', 'Cooper']));
+      await wait(2600);
+
+      say('', []);
+      setCamera('board');
+      await wait(1900);
+      shine.classList.add('go');
+      await wait(700);
+
+      placeSeal();
+      seal.classList.add('stamp');
+      await wait(520);
+      sfxThud();
+      board.classList.add('shake');
+      var sc = centreOf(seal);
+      confetti(sc.x, sc.y, 160);
+      sparkBurst(sc.x, sc.y, 50, 2);
+      say('A first in GGT history', words('The provisionals take the Cup', ['provisionals']));
+      await wait(900);
+
+      freshTally.forEach(function(t, i){ t.style.animationDelay = (i * 0.35) + 's'; t.classList.add('show'); });
+      await wait(2800);
+      controls.classList.add('show');
+    } catch(e){ if (e !== 'cancelled') throw e; }
+  }
+
+  function reset(){
+    build();
+    seal.classList.remove('stamp');
+    seal.style.opacity = ''; seal.style.transform = '';
+    shine.classList.remove('go');
+    board.classList.remove('shake');
+    controls.classList.remove('show');
+    lights.classList.remove('up');
+    parts.length = 0;
+    say('', []);
+  }
+
+  function showFinal(){
+    reset();
+    lights.classList.add('up');
+    grid.querySelectorAll('.board-cell.past').forEach(function(c){ c.style.opacity = 1; });
+    targetCell.querySelectorAll('.ltr').forEach(function(l){ l.style.opacity = 1; });
+    targetAmp.classList.add('show');
+    freshTally.forEach(function(t){ t.style.opacity = 1; });
+    setCamera('board', true);
+    placeSeal();
+    seal.style.opacity = 1;
+    seal.style.transform = 'translate(-50%,-50%) scale(1) rotate(-12deg)';
+    say('A first in GGT history', words('The provisionals take the Cup', ['provisionals']));
+    controls.classList.add('show');
+  }
+
+  build();
+  setCamera('board', true);
+
+  document.getElementById('startBtn').addEventListener('click', function(){
+    initAudio();
+    document.getElementById('intro').classList.add('gone');
+    if (reduceMotion) showFinal(); else run();
+  });
+  document.getElementById('replayBtn').addEventListener('click', function(){
+    initAudio();
+    if (reduceMotion) showFinal(); else run();
+  });
+})();
+</script>
+</body>
+</html>

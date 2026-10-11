@@ -284,6 +284,31 @@
     animation:tallySlide 0.4s ease both;
   }
 
+  /* Newest edition: names engraved letter by letter */
+  .board-cell.latest{
+    background:radial-gradient(ellipse at 50% 60%, rgba(255,210,120,0.08), transparent 70%);
+    box-shadow:inset 0 0 0 1px rgba(230,197,88,0.3), inset 0 0 18px rgba(230,197,88,0.06);
+  }
+  .board-cell.latest .cell-new{
+    position:absolute; top:6px; right:6px;
+    font-family:'JetBrains Mono',monospace; font-size:0.52rem; letter-spacing:0.18em;
+    color:#2a1a08; background:#d4a843; padding:2px 5px; border-radius:1px;
+  }
+  .board-cell.latest .ltr{ display:inline-block; white-space:pre; }
+  .honour-board.animate-in .board-cell.latest .ltr{ opacity:0; animation:moltenLetter 1.8s ease-out both; }
+  .honour-board.animate-in .board-cell.latest .cell-winner{ opacity:1; animation:none; }
+  @keyframes moltenLetter{
+    0%{ opacity:0; color:#fffaf0; transform:scale(1.35); text-shadow:0 0 4px #fff, 0 0 12px #ffe08a, 0 0 22px #ff9d2e; }
+    12%{ opacity:1; transform:none; color:#fff3c8; }
+    100%{ opacity:1; transform:none; color:#d4a843; text-shadow:0 1px 2px rgba(0,0,0,0.45), 0 0 8px rgba(212,168,67,0.12); }
+  }
+  .board-ceremony{ text-align:center; padding:0 20px 20px; position:relative; z-index:2; }
+  .board-ceremony a{
+    font-family:'JetBrains Mono',monospace; font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase;
+    color:#e6c558; text-decoration:none; border-bottom:1px solid rgba(230,197,88,0.4); padding-bottom:2px;
+  }
+  .board-ceremony a:hover{ color:#f1e9d2; border-color:#f1e9d2; }
+
   /* HONOUR BOARD */
   .honour-board{
     position:relative;
@@ -926,6 +951,7 @@
         <div class="board-subtitle">Honour Board &middot; Est. 2012</div>
       </div>
       <div class="board-grid" id="boardGrid"></div>
+      <div class="board-ceremony"><a href="engraving.html">Watch the XVI engraving &rarr;</a></div>
       <div class="board-tally-section">
         <div class="board-tally-title">Total Wins</div>
         <div class="tally-grid" id="tallyGrid"></div>
@@ -1196,40 +1222,46 @@ Sunday and the weary gents got their breakfast and headed off to the airport sur
       {src:"photos/ggt15/photo9.jpg", alt:"On the green", w:190,h:245, xr:18,y:400, r:-3, z:5},
       {src:"photos/ggt15/photo10.jpg", alt:"Full group photo", w:280,h:195, x:8,yb:0, r:1.5, z:6, pin:true},
     ] },
+
+  { num:"XVI", year:"2026", loc:"Mornington Peninsula", date:"October 2026", quote:"The provisionals take the Cup",
+    blurb:"The GGT crossed state lines for the first time — The Dunes on Friday, Moonah Links on Saturday, Portsea Village Resort as home base. Provisionals Ollie Silverton and Tom Cooper took home the Cup, the first all-provisional pairing ever to win a GGT.",
+    fullStory:``,
+    realWinner:"",
+    winners:["Ollie Silverton","Tom Cooper"], losers:["TBC"] },
 ];
 
 const attendance = {
-  "Aaron Hickey":     ["I","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
-  "Nick Forsyth":     ["II","III","IV","V","VI","VII","VIII","X","XI","XII","XIV"],
+  "Aaron Hickey":     ["I","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"],
+  "Nick Forsyth":     ["II","III","IV","V","VI","VII","VIII","X","XI","XII","XIV","XVI"],
   "Oli Finley":       ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Mitch Corrigan":   ["I","II","III","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV"],
-  "Matt Perkes":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
+  "Matt Perkes":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"],
   "Nick Bateman":     ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"],
-  "James Reeves":     ["I","II","III","IV","VI","VII","VIII","IX","X","XI","XII","XIII","XIV"],
-  "Will Dennis":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
+  "James Reeves":     ["I","II","III","IV","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XVI"],
+  "Will Dennis":      ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"],
   "George Davey":     ["IX","X","XI","XII","XIII"],
-  "Nat Connor":       ["I","II","III","VI","VII","IX","X","XI","XII","XIII","XIV","XV"],
-  "James Wakefield":  ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
+  "Nat Connor":       ["I","II","III","VI","VII","IX","X","XI","XII","XIII","XIV","XV","XVI"],
+  "James Wakefield":  ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"],
   "Jazz Mathers":    ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"],
   "Mark Williams":    ["VI","VII","VIII","IX","X","XI","XII","XV"],
-  "Occy Austin":      ["I","II","III","IV","V","VI","VII","VIII","X","XI","XII","XIII","XIV"],
-  "Hayden Bushell":   ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV","XV"],
-  "Drew Davis":       ["I","II","III","IV","V","VIII","IX","XI","XIII","XIV","XV"],
+  "Occy Austin":      ["I","II","III","IV","V","VI","VII","VIII","X","XI","XII","XIII","XIV","XVI"],
+  "Hayden Bushell":   ["I","II","III","IV","V","VI","VII","VIII","IX","X","XII","XIII","XIV","XV","XVI"],
+  "Drew Davis":       ["I","II","III","IV","V","VIII","IX","XI","XIII","XIV","XV","XVI"],
 };
 const fullMembers = Object.keys(attendance);
 const provMembers = [
-  { name:"Chris Yarrington", tag:"President of the Provisionals", trips:["VI","X","XI","XII","XIII","XIV","XV"] },
+  { name:"Chris Yarrington", tag:"President of the Provisionals", trips:["VI","X","XI","XII","XIII","XIV","XV","XVI"] },
   { name:"Dave Smith", tag:"Junior VP of Provisionals", trips:["X","XI","XIII"] },
   { name:"Marty Howard", tag:"Provisional", trips:["XI","XII","XV"] },
   { name:"Brad Drinkwater", tag:"Provisional", trips:["VII","VIII"] },
   { name:"Sean Patterson", tag:"Provisional", trips:["XI","XII","XV"] },
-  { name:"Tom Cooper", tag:"Provisional", trips:["XIII"] },
+  { name:"Tom Cooper", tag:"Provisional", trips:["XIII","XVI"] },
   { name:"Alex Shields", tag:"Provisional", trips:["XIII"] },
   { name:"Robin McGowan", tag:"Provisional", trips:["XIII"] },
-  { name:"Hugh Stackpool", tag:"Provisional", trips:["XII","XIV"] },
+  { name:"Hugh Stackpool", tag:"Provisional", trips:["XII","XIV","XVI"] },
   { name:"Iain Stewart", tag:"Provisional", trips:["XII","XV"] },
-  { name:"Ollie Silverton", tag:"Provisional", trips:["XII"] },
-  { name:"Marty Whybourne", tag:"Provisional", trips:["IV"] },
+  { name:"Ollie Silverton", tag:"Provisional", trips:["XII","XVI"] },
+  { name:"Marty Whybourne", tag:"Provisional", trips:["IV","XVI"] },
 ];
 
 const memberProfiles = {
@@ -1253,13 +1285,13 @@ const memberProfiles = {
   "Marty Howard":     { nickname:"Marty", handicap:"24", quote:"Nobody's ever confirmed if he's secretly the mysterious 'Marty Swinyard' from GGT IV, but he took out GGT XII regardless.", photo:"photos/profiles/marty-howard.jpg" },
   "Brad Drinkwater":  { nickname:"Brad", handicap:"25", quote:"Played terribly all day at GGT VII then holed out from 60 metres on 18 to win it — what happened in the front row of the entertainment afterwards is a separate story entirely.", photo:"photos/profiles/brad-drinkwater.jpg" },
   "Sean Patterson":   { nickname:"Sean", handicap:"TBC", quote:"Teed off first at GGT XII alongside Marky and didn't tee off very far — an early sign of how that round was going to go.", photo:"photos/profiles/sean-patterson.jpg" },
-  "Tom Cooper":       { nickname:"Tom", handicap:"TBC", quote:"Survived his maiden GGT at Burleigh Heads to tell the tale — barely.", photo:"photos/profiles/tom-cooper.png" },
+  "Tom Cooper":       { nickname:"Tom", handicap:"TBC", quote:"Survived his maiden GGT at Burleigh Heads to tell the tale — barely — then came back for XVI and won the whole thing with Ollie. First all-provisional champions in GGT history.", photo:"photos/profiles/tom-cooper.png" },
   "Alex Shields":     { nickname:"Alex", handicap:"36", quote:"Rang the Buck to confess he'd dodged covid for a full week straight before GGT XII finally caught up with him.", photo:"" },
   "Robin McGowan":    { nickname:"Robin", handicap:"TBC", quote:"Touched down for GGT XIII and kept his head down — smart strategy for a first trip on tour.", photo:"photos/profiles/robin-mcgowan.jpg" },
   "Drew Davis":       { nickname:"Davo", handicap:"30", quote:"Missed the GGT IX morning tee-off after a big night at the Meadowbank pub, then made up for years away by winning GGT XV alongside Perksey.", photo:"photos/profiles/andrew-davis.jpg" },
   "Hugh Stackpool":   { nickname:"Stackers", handicap:"36", quote:"Required an actual search party at GGT XII after going deep into the wee hours with Mork and Ollie — by his own admission, brought real shame to his family.", photo:"photos/profiles/hugh-stackpool.jpg" },
   "Iain Stewart":     { nickname:"Skip", handicap:"TBC", quote:"Two tours in and still keeping his powder dry — the GGT's most mysterious provisional.", photo:"photos/profiles/iain-stewart.jpg" },
-  "Ollie Silverton":  { nickname:"Ollie", handicap:"TBC", quote:"One of the GGT XII night owls who went deep into the wee hours alongside Stackpool — somehow needed no search party of his own.", photo:"photos/profiles/ollie-silverton.jpg" },
+  "Ollie Silverton":  { nickname:"Ollie", handicap:"TBC", quote:"One of the GGT XII night owls who went deep into the wee hours alongside Stackpool — somehow needed no search party of his own. Returned for XVI on the Mornington Peninsula and lifted the Cup with Tom Cooper — the first all-provisional winners.", photo:"photos/profiles/ollie-silverton.jpg" },
   "Marty Whybourne":  { nickname:"Marty", handicap:"TBC", quote:"The original Marty on tour — useless at golf by the group's own admission, and the reason Marty Swinyard's late GGT IV invite raised an eyebrow or two.", photo:"photos/profiles/marty-whybourne.jpg" },
 };
 
@@ -1325,13 +1357,17 @@ editions.forEach(e=> e.winners.forEach(w=> tally[w] = (tally[w]||0)+1 ));
 const ranked = Object.entries(tally).sort((a,b)=> b[1]-a[1]);
 const boardGrid = document.getElementById('boardGrid');
 
+const latestEdition = editions[editions.length - 1];
 editions.forEach(e=>{
   const cell = document.createElement('div');
-  cell.className = 'board-cell';
+  const isLatest = e === latestEdition && e.winners[0] !== 'TBC';
+  cell.className = 'board-cell' + (isLatest ? ' latest' : '');
+  const spell = w => w.split('').map(ch => `<span class="ltr">${ch}</span>`).join('');
   const names = e.winners[0] === 'TBC'
     ? '<div class="cell-winner" style="opacity:0.4;">TBC</div>'
-    : e.winners.map(w => `<div class="cell-winner">${w}</div>`).join('');
+    : e.winners.map(w => `<div class="cell-winner">${isLatest ? spell(w) : w}</div>`).join('');
   cell.innerHTML = `
+    ${isLatest ? '<span class="cell-new">NEW</span>' : ''}
     <div class="cell-num">${e.num}</div>
     <div class="cell-loc">${e.loc}</div>
     <div class="cell-year">${e.year || e.date.split(' ').pop()}</div>
@@ -1361,6 +1397,11 @@ const boardObserver = new IntersectionObserver((entries) => {
       cells.forEach((c,i) => { c.style.animationDelay = `${0.3 + i * 0.08}s`; });
       winners.forEach((w,i) => { w.style.animationDelay = `${0.6 + i * 0.06}s`; });
       tallyItems.forEach((t,i) => { t.style.animationDelay = `${1.2 + i * 0.05}s`; });
+      // Engrave the newest names once the rest of the board has landed
+      const engraveStart = 0.6 + winners.length * 0.06;
+      honourBoard.querySelectorAll('.board-cell.latest .ltr').forEach((l,i) => {
+        l.style.animationDelay = `${engraveStart + i * 0.07}s`;
+      });
       boardObserver.unobserve(honourBoard);
     }
   });
